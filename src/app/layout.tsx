@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { Theme } from "@radix-ui/themes";
+import LoadingIndicator from "~/app/_components/LoadingIndicator";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,7 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Theme
+          appearance="dark"
+          scaling="110%"
+          radius="medium"
+          panelBackground="solid"
+        >
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <LoadingIndicator />
+        </Theme>
       </body>
     </html>
   );
