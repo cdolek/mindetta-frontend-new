@@ -26,8 +26,12 @@ const SortVideos = () => {
         <Select.Content>
           <Select.Group>
             <Select.Label>Sort by</Select.Label>
-            <Select.Item value="published">Published</Select.Item>
-            <Select.Item value="processed">Processed</Select.Item>
+            <Select.Item value="publishedAt">
+              Published on YouTube at
+            </Select.Item>
+            <Select.Item value="ingestedAt">
+              Processed on Mindetta at
+            </Select.Item>
           </Select.Group>
         </Select.Content>
       </Select.Root>
@@ -53,7 +57,7 @@ const SortVideos = () => {
         <Select.Content>
           <Select.Group>
             <Select.Label>Count</Select.Label>
-            <Select.Item value="15">25</Select.Item>
+            <Select.Item value="15">5</Select.Item>
             <Select.Item value="25">25</Select.Item>
             <Select.Item value="50">50</Select.Item>
             <Select.Item value="75">75</Select.Item>

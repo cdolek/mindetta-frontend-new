@@ -13,9 +13,18 @@ import SortVideos from "./SortVideos";
 type ExtendedVideo = Video & {
   channel: Pick<VideoChannel, "id" | "snippet">;
 };
+import useMindettaStore from "~/_stores/store";
 
 export function LatestVideos({ session }: { session?: Session | null }) {
-  const [latestVideos] = api.video.getAll.useSuspenseQuery();
+  const videosSortBy = useMindettaStore((state) => state.videosSortBy);
+  const videosSortOrder = useMindettaStore((state) => state.videosSortOrder);
+  const videosSortCount = useMindettaStore((state) => state.videosSortCount);
+
+  const [latestVideos] = api.video.getAll.useSuspenseQuery({
+    videosSortBy,
+    videosSortOrder,
+    videosSortCount,
+  });
 
   return latestVideos.length > 0 ? (
     <Container>

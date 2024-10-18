@@ -4,7 +4,7 @@ import { devtools, persist } from "zustand/middleware";
 interface MindettaState {
   appLoadingState: "loading" | "loaded";
   videosSortOrder: "asc" | "desc";
-  videosSortBy: "published" | "processed";
+  videosSortBy: "publishedAt" | "ingestedAt";
   videosSortCount: string;
   setVideosSortOrder: (
     videosSortOrder: MindettaState["videosSortOrder"],
@@ -26,7 +26,7 @@ const useMindettaState = create<MindettaState>()(
       (set) => ({
         appLoadingState: "loaded",
         videosSortOrder: "desc",
-        videosSortBy: "published",
+        videosSortBy: "publishedAt",
         videosSortCount: "25",
         setVideosSortCount: (videosSortCount) => set({ videosSortCount }),
         setVideosSortOrder: (videosSortOrder) => set({ videosSortOrder }),

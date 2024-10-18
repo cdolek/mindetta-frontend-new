@@ -311,42 +311,50 @@ export const videoRouter = createTRPCRouter({
   //   });
   // }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.video.findMany({
-      // where: {
-      //   isShortVideo: false,
-      // },
-      // orderBy: { publishedAt: "desc" },
-      // where: { createdBy: { id: ctx.session.user.id } },
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        videosSortBy: z.string(),
+        videosSortOrder: z.string(),
+        videosSortCount: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const { videosSortBy, videosSortOrder, videosSortCount } = input;
 
-      select: {
-        id: true,
-        videoId: true,
-        title: true,
-        publishedAt: true,
-        isShortVideo: true,
-        thumbnails: true,
-        metadata: true,
-        channelTitle: true,
-        channel: {
-          select: {
-            id: true,
-            snippet: {
-              select: {
-                thumbnails: {
-                  select: {
-                    default: true,
+      return ctx.db.video.findMany({
+        // where: {
+        //   isShortVideo: false,
+        // },
+        orderBy: { [videosSortBy]: videosSortOrder },
+        // where: { createdBy: { id: ctx.session.user.id } },
+        take: parseInt(videosSortCount),
+        select: {
+          id: true,
+          videoId: true,
+          title: true,
+          publishedAt: true,
+          isShortVideo: true,
+          thumbnails: true,
+          metadata: true,
+          channelTitle: true,
+          channel: {
+            select: {
+              id: true,
+              snippet: {
+                select: {
+                  thumbnails: {
+                    select: {
+                      default: true,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
-
-      take: 100,
-    });
-  }),
+      });
+    }),
 
   loadFromDisk: publicProcedure
     .input(z.object({ id: z.string() }))

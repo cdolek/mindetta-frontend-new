@@ -17,8 +17,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body style={{ background: "red" }} suppressHydrationWarning={true}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable}`}
+      style={{ background: "red" }}
+    >
+      <body suppressHydrationWarning={true}>
         <Theme
           appearance="dark"
           scaling="110%"
