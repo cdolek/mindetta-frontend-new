@@ -11,3 +11,12 @@
   /* width: 100vw; */
   width: 100% !important;
 }
+
+.radix-themes {
+  --default-font-family: var(--font-geist-sans);
+}
+
+html,
+body {
+  background-color: #070707;
+}
