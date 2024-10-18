@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "Mindetta Button",
+    "version": "1.0.6",
+    "description": "Adds a button to your chrome browser toolbar to trigger the Mindetta workflow for a YouTube video.",
+    "host_permissions": [
+        "http://178.128.150.234:8000/*",
+        "https://www.youtube.com/*",
+        "https://youtube.com/*"
+    ],
+    "action": {
+        "default_icon": {
+            "16": "open-mind.png",
+            "48": "open-mind.png",
+            "128": "open-mind.png"
+        }
+    },
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "icons": {
+        "16": "open-mind.png",
+        "48": "open-mind.png",
+        "128": "open-mind.png"
+    },
+    "permissions": [
+        "notifications",
+        "activeTab"
+    ]
+}
