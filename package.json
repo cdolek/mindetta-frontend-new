@@ -54,6 +54,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.10.0",
+    "chrome-types": "^0.1.310",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.15",
     "postcss": "^8.4.47",

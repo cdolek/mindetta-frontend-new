@@ -1,6 +1,6 @@
 chrome.action.onClicked.addListener((tab) => {
   let notificationId = `mindetta-video-${Date.now()}`;
-  if (tab.url && tab.url.includes("youtube.com/watch")) {
+  if (tab.url?.includes("youtube.com/watch")) {
     const url = new URL(tab.url);
     const videoId = url.searchParams.get("v");
     if (videoId) {
@@ -14,7 +14,7 @@ chrome.action.onClicked.addListener((tab) => {
         .then((response) => {
           if (response.ok) {
             console.log("API Triggered Successfully");
-            chrome.notifications.create(notificationId, {
+            void chrome.notifications.create(notificationId, {
               type: "basic",
               iconUrl: "open-mind.png",
               title: "Video Queued",
@@ -27,7 +27,7 @@ chrome.action.onClicked.addListener((tab) => {
         })
         .catch((error) => {
           console.error("Error: " + error);
-          chrome.notifications.create(notificationId, {
+          void chrome.notifications.create(notificationId, {
             type: "basic",
             iconUrl: "open-mind.png",
             title: "Error",
@@ -36,7 +36,7 @@ chrome.action.onClicked.addListener((tab) => {
         });
     } else {
       console.error("Unable to determine video ID");
-      chrome.notifications.create(notificationId, {
+      void chrome.notifications.create(notificationId, {
         type: "basic",
         iconUrl: "open-mind.png",
         title: "Error",
@@ -45,7 +45,7 @@ chrome.action.onClicked.addListener((tab) => {
     }
   } else {
     console.error("This is not a YouTube video page");
-    chrome.notifications.create(notificationId, {
+    void chrome.notifications.create(notificationId, {
       type: "basic",
       iconUrl: "open-mind.png",
       title: "Error",

@@ -27,7 +27,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    /* other */
+    "types": ["chrome-types"]
   },
   "include": [
     ".eslintrc.cjs",
