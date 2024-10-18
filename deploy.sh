@@ -11,7 +11,7 @@ echo "-----------------------------"
 echo "Building the Next.js app..."
 echo "-----------------------------"
 
-pnpm build
+bun run build
 
 # Check if the build succeeded
 if [ $? -eq 0 ]; then
