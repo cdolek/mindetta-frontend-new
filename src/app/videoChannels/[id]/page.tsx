@@ -1,11 +1,11 @@
-import { Grid, Text, Flex, Heading, Container } from "@radix-ui/themes";
+import { Grid, Text, Flex, Heading } from "@radix-ui/themes";
 import VideoCard from "~/app/_components/VideoCard";
 import ErrorCallOut from "~/app/_components/ErrorCallOut";
 import VideosBreadcrumbs from "~/app/_components/VideosBreadcrumbs";
 import { api } from "~/trpc/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
-import type { Video, User, VideoChannel } from "@prisma/client";
+import type { Video, VideoChannel } from "@prisma/client";
 import Link from "next/link";
 
 type ExtendedVideo = Video & {
@@ -21,7 +21,10 @@ export default async function VideoChannelPage({
 
   const videoChannel = await api.videoChannel.get({ id });
 
-  const channelId = videoChannel?.channelId!;
+  if (!videoChannel) {
+    return <ErrorCallOut message={`Error: VideoChannel ${id} not found.`} />;
+  }
+  const channelId = videoChannel.channelId;
 
   const recentVideos = await api.videoChannel.getVideosByChannelId({
     channelId,
@@ -71,7 +74,7 @@ export default async function VideoChannelPage({
                     video={video as ExtendedVideo}
                     index={reversedIndex}
                     sessionUserId={session!.user.id}
-                    sessionEmail={session!.user.email!!}
+                    sessionEmail={session!.user.email!}
                   />
                 );
               })}

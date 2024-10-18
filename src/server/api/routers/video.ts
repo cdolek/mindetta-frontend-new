@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 type StringMatchesSentenceObj = {
   sentence: string;
@@ -98,16 +98,22 @@ export const videoRouter = createTRPCRouter({
           videoId: true,
           title: true,
           publishedAt: true,
-          isShortVideo: true,
-          thumbnails: true,
+          // isShortVideo: true,
+          // thumbnails: true,
           metadata: true,
-          description: true,
+          // description: true,
           channelTitle: true,
-          topics: true,
+          // topics: true,
           topicsSummary: true,
           transcriptChaptersSummary: true,
-          paragraphs: true,
-          transcriptChapters: true,
+          // paragraphs: true,
+          // transcriptChapters: true,
+          transcriptChapters: {
+            select: {
+              title: true,
+              start_time: true,
+            },
+          },
           channel: {
             select: {
               id: true,
@@ -145,19 +151,34 @@ export const videoRouter = createTRPCRouter({
       const s = videoData.stringMatchesSentences as Prisma.JsonArray;
 
       const matchesByKey = (s as StringMatchesSentenceObj[]).reduce(
-        (acc: any, sentenceObj: StringMatchesSentenceObj) => {
-          sentenceObj!.matches.forEach((match) => {
+        (
+          acc: Record<
+            string,
+            {
+              sentence: string;
+              matches: { key: string; start: number; end: number };
+            }[]
+          >,
+          sentenceObj: StringMatchesSentenceObj,
+        ) => {
+          sentenceObj.matches.forEach((match) => {
             if (!acc[match.key]) {
               acc[match.key] = [];
             }
-            acc[match.key].push({
+            acc[match.key]?.push({
               sentence: sentenceObj.sentence,
               matches: match,
             });
           });
           return acc;
         },
-        {},
+        {} as Record<
+          string,
+          {
+            sentence: string;
+            matches: { key: string; start: number; end: number };
+          }[]
+        >,
       );
 
       return matchesByKey;
@@ -180,18 +201,27 @@ export const videoRouter = createTRPCRouter({
       const entities =
         videoData.sentenceEntities2 as unknown as SentenceEntities2Obj[];
 
-      const entitiesByLabel = entities.reduce((acc: any, entityObj) => {
-        entityObj!.entities.forEach((entity) => {
-          if (!acc[entity.label]) {
-            acc[entity.label] = [];
-          }
-          acc[entity.label].push({
-            sentence: entityObj.sentence,
-            entity: entity,
+      const entitiesByLabel = entities.reduce(
+        (
+          acc: Record<string, { sentence: string; entity: Sentence2Entity }[]>,
+          entityObj: SentenceEntities2Obj,
+        ) => {
+          entityObj.entities.forEach((entity) => {
+            if (!acc[entity.label]) {
+              acc[entity.label] = [];
+            }
+            if (!acc[entity.label]) {
+              acc[entity.label] = [];
+            }
+            acc[entity.label]?.push({
+              sentence: entityObj.sentence,
+              entity: entity,
+            });
           });
-        });
-        return acc;
-      }, {});
+          return acc;
+        },
+        {} as Record<string, { sentence: string; entity: Sentence2Entity }[]>,
+      );
 
       return entitiesByLabel;
     }),
@@ -214,21 +244,18 @@ export const videoRouter = createTRPCRouter({
         videoData.sentenceEntities as unknown as SentenceEntitiesObj[];
 
       const entitiesByLabelWithCount = entities.reduce(
-        (acc: any, entityObj: SentenceEntitiesObj) => {
-          entityObj!.entities.forEach((entity) => {
-            if (!acc[entity.label]) {
-              acc[entity.label] = {};
-            }
+        (
+          acc: Record<string, Record<string, number>>,
+          entityObj: SentenceEntitiesObj,
+        ) => {
+          entityObj.entities.forEach((entity) => {
+            const labelAcc = acc[entity.label] ?? (acc[entity.label] = {});
             const text = entity.text;
-            if (!acc[entity.label][text]) {
-              acc[entity.label][text] = 1;
-            } else {
-              acc[entity.label][text]++;
-            }
+            labelAcc[text] = (labelAcc[text] ?? 0) + 1;
           });
           return acc;
         },
-        {},
+        {} as Record<string, Record<string, number>>,
       );
 
       return entitiesByLabelWithCount;
@@ -251,22 +278,27 @@ export const videoRouter = createTRPCRouter({
       const entities =
         videoData.sentenceEntities2 as unknown as SentenceEntities2Obj[];
 
+      interface Entity {
+        label: string;
+        span: string;
+      }
+
+      interface EntityObject {
+        entities: Entity[];
+      }
+
       const entitiesByLabelWithCount = entities.reduce(
-        (acc: any, entityObj) => {
-          entityObj!.entities.forEach((entity) => {
-            if (!acc[entity.label]) {
-              acc[entity.label] = {};
-            }
-            const span = entity.span;
-            if (!acc[entity.label][span]) {
-              acc[entity.label][span] = 1;
-            } else {
-              acc[entity.label][span]++;
-            }
+        (
+          acc: Record<string, Record<string, number>>,
+          entityObj: EntityObject,
+        ) => {
+          entityObj.entities.forEach((entity: Entity) => {
+            const labelAcc = acc[entity.label] ?? (acc[entity.label] = {});
+            labelAcc[entity.span] = (labelAcc[entity.span] ?? 0) + 1;
           });
           return acc;
         },
-        {},
+        {} as Record<string, Record<string, number>>,
       );
 
       return entitiesByLabelWithCount;

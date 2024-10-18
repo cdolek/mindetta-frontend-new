@@ -1,7 +1,6 @@
 "use client";
 
 import { Flex, Select } from "@radix-ui/themes";
-import { use } from "react";
 
 import useMindettaStore from "~/_stores/store";
 

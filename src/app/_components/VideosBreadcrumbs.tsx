@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  Grid,
-  Text,
-  Flex,
-  Heading,
-  Container,
-  Link as Link2,
-} from "@radix-ui/themes";
+import { Text, Flex } from "@radix-ui/themes";
 
 const VideosBreadcrumbs = () => {
   return (

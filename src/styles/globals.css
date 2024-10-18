@@ -3,3 +3,11 @@
 @tailwind utilities;
 
 @import "@radix-ui/themes/styles.css";
+
+#widget2,
+#widget4,
+.full-width {
+  /* height: 100vh; */
+  /* width: 100vw; */
+  width: 100% !important;
+}

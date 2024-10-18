@@ -1,10 +1,9 @@
 import { z } from "zod";
-import fs, { createWriteStream } from "fs";
 
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
+  // publicProcedure,
 } from "~/server/api/trpc";
 
 export const videoChannelRouter = createTRPCRouter({

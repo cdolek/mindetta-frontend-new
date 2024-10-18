@@ -1,13 +1,5 @@
 "use client";
-import {
-  useRef,
-  useEffect,
-  useState,
-  CSSProperties,
-  useCallback,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import { useRef, useState, forwardRef, useImperativeHandle } from "react";
 import * as Progress from "@radix-ui/react-progress";
 import useInterval from "~/hooks/useInterval";
 import { randomValue } from "~/libs/utils";
@@ -107,11 +99,11 @@ const StyledProgressRoot = styled(Progress.Root)<{ progress: number }>`
     "%,#ff0000 100%)"; */
 `;
 
-const StyledProgressIndicator = styled(Progress.Indicator)`
-  background-color: var(--color-panel-solid);
-  width: 100%;
-  height: 100%;
-  transition: transform 1960ms cubic-bezier(0.65, 0, 0.35, 1);
-`;
+// const StyledProgressIndicator = styled(Progress.Indicator)`
+//   background-color: var(--color-panel-solid);
+//   width: 100%;
+//   height: 100%;
+//   transition: transform 1960ms cubic-bezier(0.65, 0, 0.35, 1);
+// `;
 
 export default LoadingIndicatorForNodes;

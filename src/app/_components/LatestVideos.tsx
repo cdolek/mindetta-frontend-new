@@ -4,10 +4,10 @@ import type { Session } from "next-auth";
 
 import { api } from "~/trpc/react";
 
-import { Grid, Text, Flex, Select, Container } from "@radix-ui/themes";
+import { Grid, Container } from "@radix-ui/themes";
 import VideoCard from "~/app/_components/VideoCard";
 
-import type { Video, User, VideoChannel } from "@prisma/client";
+import type { Video, VideoChannel } from "@prisma/client";
 import SortVideos from "./SortVideos";
 
 type ExtendedVideo = Video & {
@@ -39,8 +39,8 @@ export function LatestVideos({ session }: { session?: Session | null }) {
               key={index}
               video={video as unknown as ExtendedVideo}
               index={reversedIndex}
-              sessionUserId={session?.user?.id || ""}
-              sessionEmail={session?.user?.email || ""}
+              sessionUserId={session?.user?.id ?? ""}
+              sessionEmail={session?.user?.email ?? ""}
             />
           );
         })}

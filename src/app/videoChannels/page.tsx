@@ -30,7 +30,7 @@ export default async function VideoChannels() {
             videoChannel={videoChannel}
             index={reversedIndex}
             sessionUserId={session!.user.id}
-            sessionEmail={session!.user.email!!}
+            sessionEmail={session!.user.email!}
           />
         );
       })}

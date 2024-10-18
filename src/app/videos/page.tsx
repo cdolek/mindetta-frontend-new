@@ -3,14 +3,14 @@ import VideoCard from "~/app/_components/VideoCard";
 import { api } from "~/trpc/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
-import type { Video, User, VideoChannel } from "@prisma/client";
+import type { Video, VideoChannel } from "@prisma/client";
 import { Flex, Select } from "@radix-ui/themes";
 type ExtendedVideo = Video & {
   channel: Pick<VideoChannel, "id" | "snippet">;
 };
 
 export default async function Videos() {
-  const recentVideos = await api.video.getAll.query();
+  const recentVideos = await api.video.getAll();
   const session = await getServerSession(authOptions);
 
   return recentVideos.length > 0 ? (
@@ -59,7 +59,7 @@ export default async function Videos() {
               video={video as ExtendedVideo}
               index={reversedIndex}
               sessionUserId={session!.user.id}
-              sessionEmail={session!.user.email!!}
+              sessionEmail={session!.user.email!}
             />
           );
         })}

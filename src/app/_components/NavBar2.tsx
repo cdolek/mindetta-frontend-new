@@ -1,6 +1,6 @@
 "use client";
 import styled from "@emotion/styled";
-import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
 
@@ -73,4 +73,3 @@ const FlexStyled = styled(Flex)`
   /* height: 48px !important; */
   background: #1c2024;
 `;
-2;

@@ -254,7 +254,7 @@ export function findUnmatchingElementsByValue<T extends ObjectWithId>(
 //   }
 // }
 
-function isDiffSameValues(
+export function isDiffSameValues(
   obj: Record<string, unknown>,
   diff: Record<string, unknown>,
 ) {

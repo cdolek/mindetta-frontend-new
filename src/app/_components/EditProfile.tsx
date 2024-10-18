@@ -273,10 +273,10 @@ const EditProfile = ({
             <Dialog.Close>
               <Button
                 type="submit"
-                disabled={updateProfile.isLoading || name.trim() === ""}
+                disabled={updateProfile.isPending || name.trim() === ""}
                 variant="solid"
               >
-                {updateProfile.isLoading ? "Saving..." : "Save"}
+                {updateProfile.isPending ? "Saving..." : "Save"}
               </Button>
             </Dialog.Close>
           </Flex>

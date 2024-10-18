@@ -1,13 +1,10 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { Flex, Card, Avatar, Inset, Strong, Text, Box } from "@radix-ui/themes";
+import { Flex, Card, Inset, Strong, Text, Box } from "@radix-ui/themes";
 import type { VideoChannel } from "@prisma/client";
 import Link from "next/link";
 const VideoChannelCard = ({
   videoChannel,
-  index,
-  sessionUserId,
-  sessionEmail,
 }: {
   videoChannel: VideoChannel;
   index: number;

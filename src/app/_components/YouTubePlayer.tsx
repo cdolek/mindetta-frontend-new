@@ -1,5 +1,6 @@
-import React from "react";
-import YouTube, { YouTubeProps } from "react-youtube";
+import { useRef } from "react";
+import YouTube from "react-youtube";
+import type { YouTubeProps } from "react-youtube";
 
 const YouTubePlayer = ({
   videoId,
@@ -8,6 +9,8 @@ const YouTubePlayer = ({
   videoId: string; // Changed String to string (JS primitive type)
   startSeconds?: number;
 }) => {
+  const hasTriggered = useRef(false);
+
   const opts: YouTubeProps["opts"] = {
     // height: "360",
     playerVars: {
@@ -18,12 +21,35 @@ const YouTubePlayer = ({
   };
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    const { width, height } = event.target.getSize();
-    event.target.setSize(width, (width / 16) * 9);
-    console.log("width", width);
+    // if (hasTriggered.current) return;
+    const {
+      width,
+      // height
+    } = event.target.getSize() as unknown as {
+      width: number;
+      height: number;
+    };
+    const target = event.target;
+    // console.log("width", width, "height", height);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    target.setSize(width, (width / 16) * 9);
+    hasTriggered.current = true;
   };
 
-  return <YouTube videoId={videoId} opts={opts} onReady={onPlayerReady} />;
+  // const onStateChange: YouTubeProps["onStateChange"] = (event) => {
+  //   console.log("state", event.data);
+  // };
+
+  return (
+    <YouTube
+      // id={videoId}
+      className="full-width"
+      videoId={videoId}
+      opts={opts}
+      onReady={onPlayerReady}
+      // onStateChange={onStateChange}
+    />
+  );
 };
 
 export default YouTubePlayer;
