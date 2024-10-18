@@ -10,13 +10,13 @@ import {
 
 const VideosBreadcrumbs = () => {
   return (
-    <Link2 size="1">
+    <Text size="1" color="blue">
       <Flex gap="2" align="center">
         <Text color="gray">Go back to</Text>
         <Link href="/videoChannels">All Video Channels</Link>
         <Link href="/">All Videos</Link>
       </Flex>
-    </Link2>
+    </Text>
   );
 };
 

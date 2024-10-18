@@ -53,8 +53,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
   //   videoId,
   // });
 
-  console.log("video", video);
-
   if (video.isLoading) {
     return null;
   }
@@ -101,7 +99,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
         })
       : [];
 
-    console.log("transcriptChaptersSummary", transcriptChaptersSummary);
+    // console.log("transcriptChaptersSummary", transcriptChaptersSummary);
 
     const transcriptChaptersSummaryElement = (
       title: string,
