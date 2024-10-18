@@ -9,6 +9,8 @@ import {
 
 import type { Prisma } from "@prisma/client";
 
+// import type { MindettaState } from "~/_stores/store";
+
 type StringMatchesSentenceObj = {
   sentence: string;
   matches: {

@@ -57,12 +57,13 @@ const SortVideos = () => {
         <Select.Content>
           <Select.Group>
             <Select.Label>Count</Select.Label>
-            <Select.Item value="15">5</Select.Item>
+            <Select.Item value="5">5</Select.Item>
+            <Select.Item value="10">10</Select.Item>
+            <Select.Item value="15">15</Select.Item>
             <Select.Item value="25">25</Select.Item>
             <Select.Item value="50">50</Select.Item>
             <Select.Item value="75">75</Select.Item>
             <Select.Item value="100">100</Select.Item>
-            <Select.Item value="200">200</Select.Item>
           </Select.Group>
         </Select.Content>
       </Select.Root>
