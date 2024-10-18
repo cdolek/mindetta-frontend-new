@@ -65,7 +65,8 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
 
     const topicsSummaryElements = topicsSummary
       ? Object.keys(topicsSummary).map((title: string) => {
-          const content = topicsSummary[title as keyof typeof topicsSummary];
+          const content: string =
+            topicsSummary[title as keyof typeof topicsSummary];
           return (
             <Flex direction="column" gap="2" mb="7" key={title}>
               <Box>
@@ -80,9 +81,8 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                     <DownloadIcon /> Download
                   </Button>
                   <Button
-                    // size="2"
                     variant="ghost"
-                    onClick={() => copyToClipboard(content)}
+                    onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
                   >
                     <ClipboardCopyIcon /> Copy to clipboard
                   </Button>
@@ -103,7 +103,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
       title: string,
       startTime: number,
     ) => {
-      const content =
+      const content: string =
         transcriptChaptersSummary![
           title as keyof typeof transcriptChaptersSummary
         ];
@@ -134,7 +134,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
               <Button
                 // size="2"
                 variant="ghost"
-                onClick={() => copyToClipboard(content)}
+                onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
               >
                 <ClipboardCopyIcon /> Copy to clipboard
               </Button>
