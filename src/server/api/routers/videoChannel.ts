@@ -54,16 +54,16 @@ export const videoChannelRouter = createTRPCRouter({
       });
     }),
 
-  getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.videoChannel.findFirst({
-      orderBy: {
-        snippet: {
-          publishedAt: "desc",
-        },
-      },
-      //   where: { createdBy: { id: ctx.session.user.id } },
-    });
-  }),
+  // getLatest: protectedProcedure.query(({ ctx }) => {
+  //   return ctx.db.videoChannel.findFirst({
+  //     orderBy: {
+  //       snippet: {
+  //         publishedAt: "desc",
+  //       },
+  //     },
+  //     //   where: { createdBy: { id: ctx.session.user.id } },
+  //   });
+  // }),
 
   getVideosByChannelId: protectedProcedure
     .input(z.object({ channelId: z.string() }))

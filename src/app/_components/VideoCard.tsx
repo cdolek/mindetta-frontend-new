@@ -6,11 +6,12 @@ import {
   Badge,
   Avatar,
   Inset,
-  Link,
   Strong,
   Text,
   Box,
 } from "@radix-ui/themes";
+import Link from "next/link";
+
 import type { Video, User, VideoChannel } from "@prisma/client";
 import { images } from "~/libs/constants";
 // import RemoveVideoButton from "./RemoveVideoButton";
@@ -34,6 +35,10 @@ const VideoCard = ({
   sessionUserId: string;
   sessionEmail: string;
 }) => {
+  if (!video) {
+    return null;
+  }
+
   return (
     <Card size="2" style={{ maxWidth: 240 }}>
       <Link href={`/videos/${video.id}`} key={video.id}>
@@ -44,7 +49,7 @@ const VideoCard = ({
           style={{ position: "relative" }}
         >
           <img
-            src={video.thumbnails.standard?.url}
+            src={video.thumbnails?.standard?.url}
             alt={video.title}
             style={{
               display: "block",
@@ -78,12 +83,12 @@ const VideoCard = ({
         <Flex gap="2" justify="between" align="center">
           <Box flexGrow="0">
             <Link
-              href={`/videoChannels/${video.channel.id}`}
+              href={`/videoChannels/${video.channel?.id}`}
               title={video.channelTitle ?? ""}
             >
               <Avatar
                 title={video.channelTitle ?? ""}
-                src={video.channel.snippet.thumbnails?.default.url ?? ""}
+                src={video.channel?.snippet.thumbnails?.default.url ?? ""}
                 fallback={"U"}
                 radius="full"
                 size="2"
@@ -95,7 +100,7 @@ const VideoCard = ({
           </Box>
           <Text size="1" color="gray">
             {/* {createdByName}{" "} */}
-            {`${video.publishedAt.toLocaleDateString([], {
+            {`${video.publishedAt?.toLocaleDateString([], {
               year: "2-digit",
               month: "2-digit",
               day: "2-digit",

@@ -8,7 +8,6 @@ import {
 } from "~/server/api/trpc";
 
 import { Prisma } from "@prisma/client";
-import { select } from "slate";
 
 type StringMatchesSentenceObj = {
   sentence: string;
@@ -273,19 +272,19 @@ export const videoRouter = createTRPCRouter({
       return entitiesByLabelWithCount;
     }),
 
-  getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.video.findFirst({
-      orderBy: { publishedAt: "desc" },
-      //   where: { createdBy: { id: ctx.session.user.id } },
-    });
-  }),
+  // getLatest: protectedProcedure.query(({ ctx }) => {
+  //   return ctx.db.video.findFirst({
+  //     orderBy: { publishedAt: "desc" },
+  //     //   where: { createdBy: { id: ctx.session.user.id } },
+  //   });
+  // }),
 
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.db.video.findMany({
       // where: {
       //   isShortVideo: false,
       // },
-      orderBy: { publishedAt: "desc" },
+      // orderBy: { publishedAt: "desc" },
       // where: { createdBy: { id: ctx.session.user.id } },
 
       select: {

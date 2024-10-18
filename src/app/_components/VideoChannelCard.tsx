@@ -1,17 +1,8 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import {
-  Flex,
-  Card,
-  Avatar,
-  Inset,
-  Link,
-  Strong,
-  Text,
-  Box,
-} from "@radix-ui/themes";
+import { Flex, Card, Avatar, Inset, Strong, Text, Box } from "@radix-ui/themes";
 import type { VideoChannel } from "@prisma/client";
-
+import Link from "next/link";
 const VideoChannelCard = ({
   videoChannel,
   index,

@@ -1,7 +1,7 @@
 "use client";
 import styled from "@emotion/styled";
-import { Box, Button, Flex, Link, Text } from "@radix-ui/themes";
-
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import Link from "next/link";
 import UserMenu from "./UserMenu";
 
 import type { Session } from "next-auth";
@@ -57,7 +57,7 @@ export default function ({ session }: { session?: Session | null }) {
               {session && session.user ? (
                 <UserMenu user={session.user} />
               ) : (
-                <Link size="3" href="/api/auth/signin">
+                <Link href="/api/auth/signin">
                   <Button>Sign in</Button>
                 </Link>
               )}
