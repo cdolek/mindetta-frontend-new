@@ -8,11 +8,14 @@ import { LatestVideos } from "./_components/LatestVideos";
 
 export default async function Home() {
   const session = await getServerAuthSession();
-  void api.video.getAll.prefetch({
-    videosSortBy: "publishedAt",
-    videosSortOrder: "desc",
-    videosSortCount: "25",
-  });
+
+  if (session?.user) {
+    void api.video.getAll.prefetch({
+      videosSortBy: "publishedAt",
+      videosSortOrder: "desc",
+      videosSortCount: "25",
+    });
+  }
 
   return (
     <HydrateClient>
