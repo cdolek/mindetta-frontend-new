@@ -313,6 +313,116 @@ export const videoRouter = createTRPCRouter({
   //   });
   // }),
 
+  autoComplete: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const agg = [
+        {
+          $search: {
+            index: "video_details",
+            // queryString: {
+            //   defaultPath: "title",
+            //   query: input.keyword,
+            // },
+            compound: {
+              should: [
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "title",
+                    fuzzy: {
+                      maxEdits: 2, // Maximum number of character changes allowed
+                    },
+                  },
+                },
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "description",
+                    fuzzy: {
+                      maxEdits: 2,
+                    },
+                  },
+                },
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "videoId",
+                  },
+                },
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "channelTitle",
+                    fuzzy: {
+                      maxEdits: 1,
+                    },
+                  },
+                },
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "transcriptChaptersSummary",
+                    fuzzy: {
+                      maxEdits: 1,
+                    },
+                  },
+                },
+                {
+                  text: {
+                    query: input.keyword,
+                    path: "topicsSummary",
+                    fuzzy: {
+                      maxEdits: 1,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        { $limit: 10 },
+        {
+          $project: {
+            id: { $toString: "$_id" },
+            title: 1,
+            channelId: 1,
+            channelTitle: 1,
+            // publishedAt: { $toDate: "$publishedAt" },
+            publishedAt: {
+              $dateToString: {
+                format: "%Y-%m-%d", // Format the date as 'YYYY-MM-DD'
+                date: "$publishedAt",
+              },
+            },
+            viewCount: "$metadata.view_count",
+            thumbnail: "$thumbnails.default.url",
+            score: { $meta: "searchScore" },
+            highlights: { $meta: "searchHighlights" },
+          },
+        },
+        {
+          $sort: { score: -1 },
+        },
+      ];
+
+      const videoData = await ctx.db.video.aggregateRaw({ pipeline: agg });
+
+      if (!videoData) {
+        throw new Error("Video not found");
+      }
+
+      return videoData as unknown as {
+        id: string;
+        title: string;
+        channelId: string;
+        channelTitle: string;
+        thumbnail: string;
+        viewCount: number;
+        publishedAt: string;
+      }[];
+    }),
+
   getAll: protectedProcedure
     .input(
       z.object({

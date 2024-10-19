@@ -1,18 +1,21 @@
 "use client";
 import styled from "@emotion/styled";
-import { Box, Button, Flex } from "@radix-ui/themes";
+import { Text, Box, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
+import Autocomplete from "./AutoComplete";
 
 import type { Session } from "next-auth";
-import {
-  // TbArrowLoopRight2,
-  // TbArrowLoopLeft2,
-  // TbArrowGuide,
-  // TbArrowElbowRight,
-  // TbChartArrowsVertical,
-  TbHome,
-} from "react-icons/tb";
+// import {
+//   // TbArrowLoopRight2,
+//   // TbArrowLoopLeft2,
+//   // TbArrowGuide,
+//   // TbArrowElbowRight,
+//   // TbChartArrowsVertical,
+//   TbCurrencyMonero,
+// } from "react-icons/tb";
+
+import { AiOutlineBulb } from "react-icons/ai";
 
 export default function ({ session }: { session?: Session | null }) {
   // console.log("session", session);
@@ -42,16 +45,21 @@ export default function ({ session }: { session?: Session | null }) {
         >
           <Box>
             <Link href="/">
-              <Flex>
+              <Flex align="center" gap="2">
                 {/* <TbArrowLoopRight2 />
                 <TbArrowLoopLeft2 />
                 <TbArrowGuide />
                 <TbArrowElbowRight /> */}
-                <TbHome size={18} />
+                <AiOutlineBulb size={18} /> <Text color="gray">Mindetta</Text>
               </Flex>
             </Link>
           </Box>
-          <Flex justify="end" gap="3" align="center">
+
+          <Box flexGrow="1">
+            <Autocomplete />
+          </Box>
+
+          <Flex justify="end" gap="3" align="center" flexGrow="1">
             {session && <Box>{/* <CreateNewFlow /> */}</Box>}
             <Box>
               {session && session.user ? (

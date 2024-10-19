@@ -1,28 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import type { ChangeEvent } from "react";
+import { api } from "~/trpc/react";
+import Link from "next/link";
 
 import {
+  Avatar,
+  Badge,
   Flex,
-  Heading,
   Card,
   ScrollArea,
   TextField,
   Box,
   Text,
 } from "@radix-ui/themes";
-
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import TimeAgo from "react-timeago";
 
-interface AutocompleteProps {
-  onSelect: (option: string) => void;
-}
-
-const Autocomplete: React.FC<AutocompleteProps> = () => {
+const Autocomplete: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { data } = api.video.autoComplete.useQuery(
+    { keyword: searchValue },
+    {
+      enabled: searchValue.trim() !== "",
+    },
+  );
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -40,6 +46,7 @@ const Autocomplete: React.FC<AutocompleteProps> = () => {
       } else {
         setIsOpen(true);
       }
+      setSearchValue(value);
     }, 500);
   };
 
@@ -65,6 +72,12 @@ const Autocomplete: React.FC<AutocompleteProps> = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
+
   return (
     <Box ref={containerRef} style={{ position: "relative" }}>
       <TextField.Root
@@ -81,40 +94,65 @@ const Autocomplete: React.FC<AutocompleteProps> = () => {
       <Card
         style={{
           position: "absolute",
+          width: "100%",
           zIndex: 1,
           display: isOpen ? "block" : "none",
         }}
       >
-        <ScrollArea type="always" scrollbars="vertical" style={{ height: 280 }}>
+        <ScrollArea
+          type="always"
+          scrollbars="vertical"
+          style={{ maxHeight: 280 }}
+        >
           <Box p="2" pr="8">
-            <Heading size="4" mb="2" trim="start">
-              Principles of the typographic craft
-            </Heading>
-            <Flex direction="column" gap="4">
-              <Text as="p">
-                Three fundamental aspects of typography are legibility,
-                readability, and aesthetics. Although in a non-technical sense
-                “legible” and “readable” are often used synonymously,
-                typographically they are separate but related concepts.
-              </Text>
+            <Flex direction="column" gap="2">
+              {Array.isArray(data) && data.length > 0 ? (
+                data.map(
+                  ({
+                    title,
+                    id,
+                    thumbnail,
+                    channelTitle,
+                    viewCount,
+                    publishedAt,
+                  }) => (
+                    // <Text as="p" size="3" truncate key={title} color="blue">
+                    //   <Link href={`/videos/${id}`}>{title}</Link>
+                    // </Text>
 
-              <Text as="p">
-                Legibility describes how easily individual characters can be
-                distinguished from one another. It is described by Walter Tracy
-                as “the quality of being decipherable and recognisable”. For
-                instance, if a “b” and an “h”, or a “3” and an “8”, are
-                difficult to distinguish at small sizes, this is a problem of
-                legibility.
-              </Text>
-
-              <Text as="p">
-                Typographers are concerned with legibility insofar as it is
-                their job to select the correct font to use. Brush Script is an
-                example of a font containing many characters that might be
-                difficult to distinguish. The selection of cases influences the
-                legibility of typography because using only uppercase letters
-                (all-caps) reduces legibility.
-              </Text>
+                    <Card size="1" key={id} variant="ghost">
+                      <Link href={`/videos/${id}`}>
+                        <Flex gap="3" align="center">
+                          <Avatar
+                            size="3"
+                            fallback="T"
+                            color="indigo"
+                            src={thumbnail}
+                          />
+                          <Box>
+                            <Text as="div" size="2" weight="bold" truncate>
+                              {title}
+                            </Text>
+                            <Flex gap="2">
+                              <Badge color="blue">{channelTitle}</Badge>
+                              <Badge color="orange">
+                                {viewCount.toLocaleString()} views
+                              </Badge>
+                              <Badge color="gray">
+                                <TimeAgo date={publishedAt} />
+                              </Badge>
+                            </Flex>
+                          </Box>
+                        </Flex>
+                      </Link>
+                    </Card>
+                  ),
+                )
+              ) : (
+                <Text>
+                  No results found for <strong>{inputValue}</strong>.
+                </Text>
+              )}
             </Flex>
           </Box>
         </ScrollArea>

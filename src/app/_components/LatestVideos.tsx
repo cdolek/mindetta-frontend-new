@@ -4,7 +4,7 @@ import type { Session } from "next-auth";
 
 import { api } from "~/trpc/react";
 
-import { Flex, Box, Grid, Container } from "@radix-ui/themes";
+import { Heading, Flex, Box, Grid, Container } from "@radix-ui/themes";
 import VideoCard from "~/app/_components/VideoCard";
 
 import type { Video, VideoChannel } from "@prisma/client";
@@ -27,10 +27,6 @@ export function LatestVideos({ session }: { session?: Session | null }) {
     videosSortCount,
   });
 
-  const handleSelect = (option: string) => {
-    console.log("Selected:", option);
-  };
-
   return latestVideos.length > 0 ? (
     <Container>
       <Flex
@@ -39,7 +35,7 @@ export function LatestVideos({ session }: { session?: Session | null }) {
         // style={{ background: "red" }}
       >
         <Box flexGrow="1">
-          <Autocomplete onSelect={handleSelect} />
+          <Heading>Videos</Heading>
         </Box>
         <SortVideos />
       </Flex>
