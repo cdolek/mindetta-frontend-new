@@ -24,6 +24,7 @@ import {
   Flex,
   Text,
   Separator,
+  Grid,
 } from "@radix-ui/themes";
 
 import Link from "next/link";
@@ -78,15 +79,16 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                   </Heading>
                   <Button
                     variant="ghost"
-                    onClick={() => downloadSingleTopicSummary(title, content)}
-                  >
-                    <DownloadIcon /> Download
-                  </Button>
-                  <Button
-                    variant="ghost"
                     onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
                   >
-                    <TbClipboard /> Copy to clipboard
+                    <TbClipboard />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    onClick={() => downloadSingleTopicSummary(title, content)}
+                  >
+                    <DownloadIcon />
                   </Button>
                 </Flex>
                 <Box ml="4">
@@ -128,17 +130,16 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
               <Button
                 // size="2"
                 variant="ghost"
-                onClick={() => downloadSingleChapterSummary(title, content)}
+                onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
               >
-                <DownloadIcon /> Download
+                <TbClipboard />
               </Button>
-
               <Button
                 // size="2"
                 variant="ghost"
-                onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
+                onClick={() => downloadSingleChapterSummary(title, content)}
               >
-                <TbClipboard /> Copy to clipboard
+                <DownloadIcon />
               </Button>
             </Flex>
             <Box ml="4">
@@ -308,29 +309,43 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             />
           </Box>
 
-          <Flex mt="5" mb="5" gap="3">
+          {/* <Grid mt="5" mb="5" gap="3" columns={{ '@initial': 1, '@md': 2 }}> */}
+
+          <Grid
+            columns={{
+              initial: "2",
+              xs: "2",
+              sm: "2",
+              md: "5",
+            }}
+            gap="3"
+            p="3"
+            width="auto"
+            justify="between"
+          >
             {transcriptChaptersSummary &&
               Object.keys(transcriptChaptersSummary).length > 0 && (
                 <>
-                  <Button onClick={downloadChaptersSummary}>
-                    <DownloadIcon /> All Chapters
-                  </Button>
-                  <Button onClick={copyAllChaptersToClipboard} variant="soft">
+                  <Button onClick={copyAllChaptersToClipboard}>
                     <TbClipboard /> All Chapters
+                  </Button>
+
+                  <Button onClick={downloadChaptersSummary} variant="soft">
+                    <DownloadIcon /> All Chapters
                   </Button>
                 </>
               )}
             {topicsSummary && Object.keys(topicsSummary).length > 0 && (
               <>
-                <Button onClick={downloadTopicsSummary}>
-                  <DownloadIcon /> All Topics
-                </Button>
-                <Button onClick={copyAllTopicsToClipboard} variant="soft">
+                <Button onClick={copyAllTopicsToClipboard}>
                   <TbClipboard /> All Topics
+                </Button>
+                <Button onClick={downloadTopicsSummary} variant="soft">
+                  <DownloadIcon /> All Topics
                 </Button>
               </>
             )}
-          </Flex>
+          </Grid>
 
           {transcriptChaptersSummary &&
             Object.keys(transcriptChaptersSummary).length > 0 && (

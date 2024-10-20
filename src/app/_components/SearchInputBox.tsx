@@ -100,13 +100,14 @@ const SearchInputBox: React.FC = () => {
           zIndex: 1,
           display: isOpen ? "block" : "none",
         }}
+        size="1"
       >
         <ScrollArea
           type="always"
           scrollbars="vertical"
           style={{ maxHeight: 270 }}
         >
-          <Box p="2" pr="8">
+          <Box p="2">
             <Flex direction="column" gap="2">
               {Array.isArray(data) && data.length > 0
                 ? data.map(
@@ -122,12 +123,12 @@ const SearchInputBox: React.FC = () => {
                       //   <Link href={`/videos/${id}`}>{title}</Link>
                       // </Text>
 
-                      <Card size="1" key={id} variant="ghost">
+                      <Card key={id} variant="ghost">
                         <Link href={`/videos/${id}`}>
                           <Flex gap="3" align="center">
                             <Avatar
-                              size="3"
-                              fallback="T"
+                              size={{ initial: "1", sm: "3" }}
+                              fallback={title}
                               color="indigo"
                               src={thumbnail}
                             />

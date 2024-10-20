@@ -17,7 +17,15 @@ const SortVideos = () => {
   const videosSortCount = useMindettaStore((state) => state.videosSortCount);
 
   return (
-    <Flex justify="end" p="3" gap="1">
+    <Flex
+      justify="end"
+      p="3"
+      gap="1"
+      // direction={{
+      //   initial: "column",
+      //   sm: "row",
+      // }}
+    >
       <Select.Root
         defaultValue={videosSortBy}
         onValueChange={(v: typeof videosSortBy) => setVideosSortBy(v)}
@@ -26,8 +34,8 @@ const SortVideos = () => {
         <Select.Content>
           <Select.Group>
             <Select.Label>Sort by</Select.Label>
-            <Select.Item value="publishedAt">Published on YouTube</Select.Item>
-            <Select.Item value="ingestedAt">Processed on Mindetta</Select.Item>
+            <Select.Item value="publishedAt">on YouTube</Select.Item>
+            <Select.Item value="ingestedAt">on Mindetta</Select.Item>
           </Select.Group>
         </Select.Content>
       </Select.Root>

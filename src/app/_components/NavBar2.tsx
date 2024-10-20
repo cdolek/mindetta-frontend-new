@@ -40,7 +40,7 @@ export default function ({ session }: { session?: Session | null }) {
         <Flex
           justify="between"
           align="center"
-          gap="6"
+          gap="4"
           width="auto"
           height="auto"
         >
@@ -56,9 +56,11 @@ export default function ({ session }: { session?: Session | null }) {
             </Link>
           </Box>
 
-          <Box flexGrow="1" style={{ maxWidth: 600 }}>
-            <SearchInputBox />
-          </Box>
+          {session && (
+            <Box flexGrow="1" style={{ maxWidth: 600 }}>
+              <SearchInputBox />
+            </Box>
+          )}
 
           <Flex justify="end" gap="3" align="center" flexGrow="1">
             {session && (

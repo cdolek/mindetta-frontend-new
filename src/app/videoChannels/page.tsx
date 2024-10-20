@@ -14,7 +14,15 @@ export default async function VideoChannels() {
       <Container>
         <VideosBreadcrumbs />
 
-        <Heading size="7" mb="3">
+        <Heading
+          size={{
+            initial: "7",
+            xs: "2",
+            sm: "3",
+            md: "5",
+          }}
+          mb="3"
+        >
           Video Channels
         </Heading>
 
@@ -28,7 +36,7 @@ export default async function VideoChannels() {
           gap="3"
           p="3"
           width="auto"
-          style={{ zIndex: 0 }}
+          style={{ zIndex: 0, width: "auto", justifyItems: "center" }}
         >
           {videoChannels.map((videoChannel, index) => {
             const reversedIndex = videoChannels.length - index - 1;

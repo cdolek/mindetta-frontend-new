@@ -51,7 +51,6 @@ const AddVideoToQueue = () => {
       <Dialog.Trigger>
         <Button variant="soft">
           <BiSolidVideoPlus />
-          Add a Video
         </Button>
       </Dialog.Trigger>
 

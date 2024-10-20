@@ -34,21 +34,31 @@ export function LatestVideos({ session }: { session?: Session | null }) {
         // style={{ background: "red" }}
       >
         <Box flexGrow="1">
-          <Heading>Videos</Heading>
+          <Heading
+            size={{
+              initial: "2",
+              xs: "2",
+              sm: "3",
+              md: "5",
+              lg: "7",
+            }}
+          >
+            Videos
+          </Heading>
         </Box>
         <SortVideos />
       </Flex>
       <Grid
+        className="justify-center"
         columns={{
           initial: "1",
           xs: "2",
-          sm: "3",
+          sm: "2",
           md: "5",
         }}
         gap="3"
         p="3"
         width="auto"
-        style={{ zIndex: 0 }}
       >
         {latestVideos.map((video, index) => {
           const reversedIndex = latestVideos.length - index - 1;

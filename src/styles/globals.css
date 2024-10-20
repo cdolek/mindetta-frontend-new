@@ -20,3 +20,7 @@ html,
 body {
   background-color: #070707;
 }
+
+.justify-center {
+  justify-items: center !important;
+}

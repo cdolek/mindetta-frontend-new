@@ -12,11 +12,8 @@ import {
 } from "@radix-ui/themes";
 import Link from "next/link";
 
-import type { Video, User, VideoChannel } from "@prisma/client";
-import { images } from "~/libs/constants";
+import type { Video, VideoChannel } from "@prisma/client";
 // import RemoveVideoButton from "./RemoveVideoButton";
-import { useSession } from "next-auth/react";
-import { SessionProvider } from "next-auth/react";
 
 import { formatVideoSecondsToTime } from "~/libs/utils";
 
@@ -26,9 +23,6 @@ type ExtendedVideo = Video & {
 
 const VideoCard = ({
   video,
-  index,
-  sessionUserId,
-  sessionEmail,
 }: {
   video: ExtendedVideo;
   index: number;
@@ -40,7 +34,7 @@ const VideoCard = ({
   }
 
   return (
-    <Card size="2" style={{ maxWidth: 440 }}>
+    <Card size="2" style={{ maxWidth: 340 }}>
       <Link href={`/videos/${video.id}`} key={video.id}>
         <Inset
           clip="padding-box"
@@ -55,7 +49,7 @@ const VideoCard = ({
               display: "block",
               objectFit: "cover",
               width: "100%",
-              height: 128,
+              height: 120,
               backgroundColor: "var(--gray-5)",
             }}
           />
@@ -70,7 +64,7 @@ const VideoCard = ({
             }}
           >
             {video.metadata
-              ? formatVideoSecondsToTime(video.metadata!.duration)
+              ? formatVideoSecondsToTime(video.metadata.duration)
               : null}
           </Badge>
         </Inset>
