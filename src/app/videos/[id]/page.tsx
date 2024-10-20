@@ -166,15 +166,29 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
       );
     };
 
+    const copyAllChaptersToClipboard = () => {
+      const content = Object.entries(transcriptChaptersSummary!)
+        .map(([title, content]) => `# ${title}\n\n${content}`)
+        .join("\n\n");
+      copyToClipboard(content);
+    };
+
+    const copyAllTopicsToClipboard = () => {
+      const content = Object.entries(topicsSummary!)
+        .map(([title, content]) => `# ${title}\n\n${content}`)
+        .join("\n\n");
+      copyToClipboard(content);
+    };
+
     const downloadSingleChapterSummary = (title: string, content: string) => {
-      const blob = new Blob([`## ${title}\n\n${content}`], {
+      const blob = new Blob([`# ${title}\n\n${content}`], {
         type: "text/markdown;charset=utf-8",
       });
       saveAs(blob, `${video.data?.videoId}_CHAPTER_${title}.md`);
     };
 
     const downloadSingleTopicSummary = (title: string, content: string) => {
-      const blob = new Blob([`## ${title}\n\n${content}`], {
+      const blob = new Blob([`# ${title}\n\n${content}`], {
         type: "text/markdown;charset=utf-8",
       });
       saveAs(blob, `${video.data?.videoId}_TOPIC_${title}.md`);
@@ -184,7 +198,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
       const blob = new Blob(
         [
           Object.entries(transcriptChaptersSummary!)
-            .map(([title, content]) => `## ${title}\n\n${content}`)
+            .map(([title, content]) => `# ${title}\n\n${content}`)
             .join("\n\n"),
         ],
         { type: "text/markdown;charset=utf-8" },
@@ -199,7 +213,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
       const blob = new Blob(
         [
           Object.entries(topicsSummary!)
-            .map(([title, content]) => `## ${title}\n\n${content}`)
+            .map(([title, content]) => `# ${title}\n\n${content}`)
             .join("\n\n"),
         ],
         { type: "text/markdown;charset=utf-8" },
@@ -296,13 +310,25 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
           <Flex mt="5" mb="5" gap="3">
             {transcriptChaptersSummary &&
               Object.keys(transcriptChaptersSummary).length > 0 && (
-                <Button onClick={downloadChaptersSummary}>
-                  <DownloadIcon /> All Chapters
-                </Button>
+                <>
+                  <Button onClick={downloadChaptersSummary}>
+                    <DownloadIcon /> All Chapters
+                  </Button>
+                  <Button onClick={copyAllChaptersToClipboard} variant="soft">
+                    <ClipboardCopyIcon /> All Chapters
+                  </Button>
+                </>
               )}
-            <Button onClick={downloadTopicsSummary}>
-              <DownloadIcon /> All Topics
-            </Button>
+            {topicsSummary && Object.keys(topicsSummary).length > 0 && (
+              <>
+                <Button onClick={downloadTopicsSummary}>
+                  <DownloadIcon /> All Topics
+                </Button>
+                <Button onClick={copyAllTopicsToClipboard} variant="soft">
+                  <ClipboardCopyIcon /> All Topics
+                </Button>
+              </>
+            )}
           </Flex>
 
           {transcriptChaptersSummary &&
