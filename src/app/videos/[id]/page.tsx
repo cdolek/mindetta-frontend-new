@@ -29,6 +29,7 @@ import Link from "next/link";
 
 import MarkdownRenderer from "~/app/_components/MarkdownRenderer";
 import VideosBreadcrumbs from "~/app/_components/VideosBreadcrumbs";
+import BtnGoToTop from "~/app/_components/BtnGoToTop";
 
 export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
   const { id } = params;
@@ -328,6 +329,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
           </Flex>
 
           <p>{video.data!.videoId}</p>
+          <BtnGoToTop />
         </Container>
       </Box>
     );
