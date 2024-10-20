@@ -25,6 +25,7 @@ import {
   Text,
   Separator,
   Grid,
+  Avatar,
 } from "@radix-ui/themes";
 
 import Link from "next/link";
@@ -271,14 +272,14 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
           <Box maxWidth="440px" mb="7">
             <Card>
               <Flex gap="3" align="start">
-                {/* <Link href={`/videoChannels/${video.data?.channel.id}`}>
-                    <Avatar
-                      size="3"
-                      src={video.data?.channel.snippet.thumbnails?.default.url}
-                      radius="full"
-                      fallback={video.data!.channelTitle}
-                    />
-                  </Link> */}
+                <Link href={`/videoChannels/${video.data?.channel.id}`}>
+                  <Avatar
+                    size="3"
+                    src={video.data?.channel.snippet.thumbnails?.default.url}
+                    radius="full"
+                    fallback={video.data!.channelTitle}
+                  />
+                </Link>
                 <Box>
                   <Link href={`/videoChannels/${video.data?.channel.id}`}>
                     <Text as="div" size="2" weight="bold">
@@ -301,7 +302,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
               </Flex>
             </Card>
           </Box>
-
           <Box>
             <YouTubePlayer
               videoId={video.data!.videoId}
@@ -351,7 +351,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             Object.keys(transcriptChaptersSummary).length > 0 && (
               <Flex direction="column" gap="3" width="100%">
                 <Heading size="6" color="teal">
-                  Chapters' Summary
+                  Chapters
                 </Heading>
                 {video.data?.transcriptChapters.map((chapter) =>
                   transcriptChaptersSummaryElement(
