@@ -90,6 +90,42 @@ export const videoRouter = createTRPCRouter({
   //       });
   //     }),
 
+  newVideo: protectedProcedure
+    .input(z.object({ videoId: z.string() }))
+    .mutation(async ({ input }) => {
+      console.log("newVideo", input.videoId);
+
+      try {
+        const response = await fetch(
+          "http://178.128.150.234:8000/api/v1/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ videoId: input.videoId }),
+          },
+        );
+
+        if (response.ok) {
+          console.log("API Triggered Successfully");
+          return {
+            success: true,
+            message: `Video ID: ${input.videoId} is in the queue!`,
+          };
+        } else {
+          console.error("Failed to trigger API");
+          throw new Error("Failed to trigger API");
+        }
+      } catch (error) {
+        console.error("Error: ", error);
+        return {
+          success: false,
+          message: "Failed to queue the video. Please try again.",
+        };
+      }
+    }),
+
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {

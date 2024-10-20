@@ -4,6 +4,7 @@ import { Text, Box, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
 import SearchInputBox from "./SearchInputBox";
+import AddVideoToQueue from "./AddVideoToQueue";
 
 import type { Session } from "next-auth";
 // import {
@@ -60,7 +61,11 @@ export default function ({ session }: { session?: Session | null }) {
           </Box>
 
           <Flex justify="end" gap="3" align="center" flexGrow="1">
-            {session && <Box>{/* <CreateNewFlow /> */}</Box>}
+            {session && (
+              <Box>
+                <AddVideoToQueue />
+              </Box>
+            )}
             <Box>
               {session && session.user ? (
                 <UserMenu user={session.user} />
