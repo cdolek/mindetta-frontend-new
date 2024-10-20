@@ -26,3 +26,5 @@ async function generateAESKey() {
 void (async () => {
   await generateAESKey();
 })();
+
+// https://github.com/t3-oss/create-t3-app/issues/1765
