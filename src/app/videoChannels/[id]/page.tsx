@@ -1,4 +1,12 @@
-import { Grid, Text, Flex, Heading } from "@radix-ui/themes";
+import {
+  Container,
+  Box,
+  Grid,
+  Text,
+  Flex,
+  Heading,
+  Badge,
+} from "@radix-ui/themes";
 import VideoCard from "~/app/_components/VideoCard";
 import ErrorCallOut from "~/app/_components/ErrorCallOut";
 import VideosBreadcrumbs from "~/app/_components/VideosBreadcrumbs";
@@ -36,52 +44,51 @@ export default async function VideoChannelPage({
       return <ErrorCallOut message={`Error: VideoChannel ${id} not found.`} />;
     }
     return recentVideos.length > 0 ? (
-      <>
-        <Flex direction="column" gap="3" mt="3">
-          <Flex m="3" flexGrow="1" direction="column">
-            <VideosBreadcrumbs />
-            <Flex align="center" gap="3">
-              <Heading size="7">{videoChannel.snippet.title}</Heading>
-              <Text>
-                <Link
-                  href={`https://www.youtube.com/channel/${videoChannel.channelId}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {videoChannel.snippet.customUrl}
-                </Link>
-              </Text>
-            </Flex>
-            {/* <code>{JSON.stringify(videoChannel, null, 2)}</code> */}
-            <Grid
-              columns={{
-                initial: "1",
-                xs: "2",
-                sm: "3",
-                md: "5",
-              }}
-              gap="3"
-              p="3"
-              width="auto"
-              style={{ zIndex: 0 }}
-            >
-              {recentVideos.map((video, index) => {
-                const reversedIndex = recentVideos.length - index - 1;
-                // return video.thumbnails.standard.url;
-                return (
-                  <VideoCard
-                    key={index}
-                    video={video as ExtendedVideo}
-                    index={reversedIndex}
-                    sessionUserId={session!.user.id}
-                    sessionEmail={session!.user.email!}
-                  />
-                );
-              })}
-            </Grid>
+      <Box p="3">
+        <Container>
+          <VideosBreadcrumbs />
+          <Flex align="center" gap="3">
+            <Heading size="7">{videoChannel.snippet.title}</Heading>
+            <Text>
+              <Link
+                href={`https://www.youtube.com/channel/${videoChannel.channelId}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {videoChannel.snippet.customUrl}
+              </Link>
+            </Text>
+            <Badge color="plum">Channel</Badge>
           </Flex>
-        </Flex>
-      </>
+          {/* <code>{JSON.stringify(videoChannel, null, 2)}</code> */}
+          <Grid
+            columns={{
+              initial: "1",
+              xs: "2",
+              sm: "3",
+              md: "5",
+            }}
+            gap="3"
+            p="3"
+            width="auto"
+            style={{ zIndex: 0 }}
+          >
+            {recentVideos.map((video, index) => {
+              const reversedIndex = recentVideos.length - index - 1;
+              // return video.thumbnails.standard.url;
+              return (
+                <VideoCard
+                  key={index}
+                  video={video as ExtendedVideo}
+                  index={reversedIndex}
+                  sessionUserId={session!.user.id}
+                  sessionEmail={session!.user.email!}
+                />
+              );
+            })}
+          </Grid>
+        </Container>
+      </Box>
     ) : (
       <Text>No videos found.</Text>
     );

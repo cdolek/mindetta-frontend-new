@@ -40,7 +40,7 @@ const VideoCard = ({
   }
 
   return (
-    <Card size="2" style={{ maxWidth: 240 }}>
+    <Card size="2" style={{ maxWidth: 440 }}>
       <Link href={`/videos/${video.id}`} key={video.id}>
         <Inset
           clip="padding-box"
@@ -75,7 +75,12 @@ const VideoCard = ({
           </Badge>
         </Inset>
       </Link>
-      <Flex gap="3" direction="column" justify="between">
+      <Flex
+        gap="3"
+        direction="column"
+        justify="between"
+        style={{ minHeight: 180 }}
+      >
         <Text as="p" size="3">
           <Strong>{video.title}</Strong>
         </Text>

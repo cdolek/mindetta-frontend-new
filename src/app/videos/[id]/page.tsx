@@ -119,7 +119,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                   setStartSeconds(startTime);
                 }}
               >
-                <Heading size="6" mb="4">
+                <Heading size="6" mb="4" color="ruby">
                   {title}
                 </Heading>
               </Link>

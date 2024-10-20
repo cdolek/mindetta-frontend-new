@@ -26,12 +26,8 @@ const SortVideos = () => {
         <Select.Content>
           <Select.Group>
             <Select.Label>Sort by</Select.Label>
-            <Select.Item value="publishedAt">
-              Published on YouTube at
-            </Select.Item>
-            <Select.Item value="ingestedAt">
-              Processed on Mindetta at
-            </Select.Item>
+            <Select.Item value="publishedAt">Published on YouTube</Select.Item>
+            <Select.Item value="ingestedAt">Processed on Mindetta</Select.Item>
           </Select.Group>
         </Select.Content>
       </Select.Root>

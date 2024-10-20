@@ -15,6 +15,7 @@ import {
 } from "@radix-ui/themes";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import TimeAgo from "react-timeago";
+import { set } from "zod";
 
 const SearchInputBox: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -23,12 +24,14 @@ const SearchInputBox: React.FC = () => {
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data } = api.video.autoComplete.useQuery(
+  const dataResult = api.video.autoComplete.useQuery(
     { keyword: searchValue },
     {
       enabled: searchValue.trim() !== "",
     },
   );
+
+  const data = dataResult.data;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -40,13 +43,9 @@ const SearchInputBox: React.FC = () => {
 
     typingTimeoutRef.current = setTimeout(() => {
       // This will only run after user stops typing
-      console.log("User stopped typing. Call the function here.");
-      if (value.trim() === "") {
-        setIsOpen(false);
-      } else {
-        setIsOpen(true);
+      if (value.trim() !== "") {
+        setSearchValue(value);
       }
-      setSearchValue(value);
     }, 500);
   };
 
@@ -60,7 +59,7 @@ const SearchInputBox: React.FC = () => {
   };
 
   const handleTextFieldClick = () => {
-    if (inputValue.trim() !== "") {
+    if (inputValue.trim() !== "" && !dataResult.isPending) {
       setIsOpen(true);
     }
   };
@@ -74,6 +73,9 @@ const SearchInputBox: React.FC = () => {
 
   useEffect(() => {
     if (data) {
+      if (data.length > 0) {
+        setIsOpen(true);
+      }
       console.log(data);
     }
   }, [data]);
@@ -81,7 +83,7 @@ const SearchInputBox: React.FC = () => {
   return (
     <Box ref={containerRef} style={{ position: "relative" }}>
       <TextField.Root
-        placeholder="Search…"
+        placeholder="Search videos…"
         value={inputValue}
         onChange={handleInputChange}
         onClick={handleTextFieldClick}
@@ -102,57 +104,57 @@ const SearchInputBox: React.FC = () => {
         <ScrollArea
           type="always"
           scrollbars="vertical"
-          style={{ maxHeight: 280 }}
+          style={{ maxHeight: 270 }}
         >
           <Box p="2" pr="8">
             <Flex direction="column" gap="2">
-              {Array.isArray(data) && data.length > 0 ? (
-                data.map(
-                  ({
-                    title,
-                    id,
-                    thumbnail,
-                    channelTitle,
-                    viewCount,
-                    publishedAt,
-                  }) => (
-                    // <Text as="p" size="3" truncate key={title} color="blue">
-                    //   <Link href={`/videos/${id}`}>{title}</Link>
-                    // </Text>
+              {Array.isArray(data) && data.length > 0
+                ? data.map(
+                    ({
+                      title,
+                      id,
+                      thumbnail,
+                      channelTitle,
+                      viewCount,
+                      publishedAt,
+                    }) => (
+                      // <Text as="p" size="3" truncate key={title} color="blue">
+                      //   <Link href={`/videos/${id}`}>{title}</Link>
+                      // </Text>
 
-                    <Card size="1" key={id} variant="ghost">
-                      <Link href={`/videos/${id}`}>
-                        <Flex gap="3" align="center">
-                          <Avatar
-                            size="3"
-                            fallback="T"
-                            color="indigo"
-                            src={thumbnail}
-                          />
-                          <Box>
-                            <Text as="div" size="2" weight="bold" truncate>
-                              {title}
-                            </Text>
-                            <Flex gap="2">
-                              <Badge color="blue">{channelTitle}</Badge>
-                              <Badge color="orange">
-                                {viewCount.toLocaleString()} views
-                              </Badge>
-                              <Badge color="gray">
-                                <TimeAgo date={publishedAt} />
-                              </Badge>
-                            </Flex>
-                          </Box>
-                        </Flex>
-                      </Link>
-                    </Card>
-                  ),
-                )
-              ) : (
-                <Text>
-                  No results found for <strong>{inputValue}</strong>.
-                </Text>
-              )}
+                      <Card size="1" key={id} variant="ghost">
+                        <Link href={`/videos/${id}`}>
+                          <Flex gap="3" align="center">
+                            <Avatar
+                              size="3"
+                              fallback="T"
+                              color="indigo"
+                              src={thumbnail}
+                            />
+                            <Box>
+                              <Text as="div" size="2" weight="bold" truncate>
+                                {title}
+                              </Text>
+                              <Flex gap="2">
+                                <Badge color="blue">{channelTitle}</Badge>
+                                <Badge color="orange">
+                                  {viewCount.toLocaleString()} views
+                                </Badge>
+                                <Badge color="gray">
+                                  <TimeAgo date={publishedAt} />
+                                </Badge>
+                              </Flex>
+                            </Box>
+                          </Flex>
+                        </Link>
+                      </Card>
+                    ),
+                  )
+                : !dataResult.isPending && (
+                    <Text>
+                      No results found for <strong>{inputValue}</strong>.
+                    </Text>
+                  )}
             </Flex>
           </Box>
         </ScrollArea>
