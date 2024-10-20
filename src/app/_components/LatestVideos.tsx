@@ -9,7 +9,6 @@ import VideoCard from "~/app/_components/VideoCard";
 
 import type { Video, VideoChannel } from "@prisma/client";
 import SortVideos from "./SortVideos";
-import Autocomplete from "./AutoComplete";
 
 type ExtendedVideo = Video & {
   channel: Pick<VideoChannel, "id" | "snippet">;

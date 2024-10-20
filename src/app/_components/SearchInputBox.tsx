@@ -16,7 +16,7 @@ import {
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import TimeAgo from "react-timeago";
 
-const Autocomplete: React.FC = () => {
+const SearchInputBox: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -161,4 +161,4 @@ const Autocomplete: React.FC = () => {
   );
 };
 
-export default Autocomplete;
+export default SearchInputBox;

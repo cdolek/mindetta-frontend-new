@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Text, Box, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
-import Autocomplete from "./AutoComplete";
+import SearchInputBox from "./SearchInputBox";
 
 import type { Session } from "next-auth";
 // import {
@@ -55,8 +55,8 @@ export default function ({ session }: { session?: Session | null }) {
             </Link>
           </Box>
 
-          <Box flexGrow="1">
-            <Autocomplete />
+          <Box flexGrow="1" style={{ maxWidth: 600 }}>
+            <SearchInputBox />
           </Box>
 
           <Flex justify="end" gap="3" align="center" flexGrow="1">
