@@ -51,6 +51,7 @@ const EditProfile = ({
   const [localOpenAITemperature, setOpenAILocalTemperature] =
     useLocalStorage<number>("openAITemperature", 0);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [canUseLocalKey, setCanUseLocalKey] = useLocalStorage<boolean>(
     "canUseLocalKey",
     false,
