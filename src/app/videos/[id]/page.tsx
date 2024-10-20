@@ -4,7 +4,8 @@ import ErrorCallOut from "~/app/_components/ErrorCallOut";
 // import { api } from "~/trpc/server";
 import { api } from "~/trpc/react";
 
-import { DownloadIcon, ClipboardCopyIcon } from "@radix-ui/react-icons";
+import { DownloadIcon } from "@radix-ui/react-icons";
+import { TbClipboard } from "react-icons/tb";
 
 import { useState } from "react";
 
@@ -85,7 +86,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                     variant="ghost"
                     onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
                   >
-                    <ClipboardCopyIcon /> Copy to clipboard
+                    <TbClipboard /> Copy to clipboard
                   </Button>
                 </Flex>
                 <Box ml="4">
@@ -137,7 +138,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                 variant="ghost"
                 onClick={() => copyToClipboard(`# ${title}\n\n${content}`)}
               >
-                <ClipboardCopyIcon /> Copy to clipboard
+                <TbClipboard /> Copy to clipboard
               </Button>
             </Flex>
             <Box ml="4">
@@ -315,7 +316,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                     <DownloadIcon /> All Chapters
                   </Button>
                   <Button onClick={copyAllChaptersToClipboard} variant="soft">
-                    <ClipboardCopyIcon /> All Chapters
+                    <TbClipboard /> All Chapters
                   </Button>
                 </>
               )}
@@ -325,7 +326,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                   <DownloadIcon /> All Topics
                 </Button>
                 <Button onClick={copyAllTopicsToClipboard} variant="soft">
-                  <ClipboardCopyIcon /> All Topics
+                  <TbClipboard /> All Topics
                 </Button>
               </>
             )}
