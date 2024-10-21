@@ -33,7 +33,6 @@ import Link from "next/link";
 import MarkdownRenderer from "~/app/_components/MarkdownRenderer";
 import VideosBreadcrumbs from "~/app/_components/VideosBreadcrumbs";
 import BtnGoToTop from "~/app/_components/BtnGoToTop";
-import GraphVis from "~/app/_components/GraphVis";
 
 export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
   const { id } = params;
@@ -270,12 +269,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             {video.data?.title}
           </Heading>
 
-          <GraphVis
-            style={{ width: "100%", height: 540 }}
-            videoId={video.data!.videoId}
-          />
-
-          <Box maxWidth="440px" mb="3" mt="3">
+          <Box maxWidth="440px" mb="7">
             <Card>
               <Flex gap="3" align="start">
                 <Link href={`/videoChannels/${video.data?.channel.id}`}>
@@ -308,7 +302,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
               </Flex>
             </Card>
           </Box>
-
           <Box>
             <YouTubePlayer
               videoId={video.data!.videoId}

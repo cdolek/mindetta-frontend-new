@@ -15,7 +15,6 @@ import {
 } from "@radix-ui/themes";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import TimeAgo from "react-timeago";
-import { set } from "zod";
 
 const SearchInputBox: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);

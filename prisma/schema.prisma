@@ -363,3 +363,46 @@ model VerificationToken {
 
 //     @@unique([identifier, token])
 // }
+
+model KnowledgeGraph {
+    id                String             @id @default(auto()) @map("_id") @db.ObjectId
+    edgeId            String
+    channelId         String
+    channelTitle      String
+    relation          String
+    sourceId          String
+    targetId          String
+    source            KnowledgeGraphNode
+    target            KnowledgeGraphNode
+    videoId           String
+    videoMetaData     VideoMetaData
+    videoPublishedAt  DateTime
+    videoThumbnailsId String?
+    videoThumbnails   VideoThumbnails[]
+}
+
+type KnowledgeGraphNode {
+    nodeId       String
+    name         String
+    type         String
+    videoId      String
+    chapterTitle String
+}
+
+type VideoMetaData {
+    duration               Int
+    view_count             Int
+    categories             String[]
+    tags                   String[]
+    like_count             Int? // Optional as it might be null
+    channel_follower_count Int
+    comment_count          Int
+}
+
+type VideoThumbnails {
+    default  Thumbnail
+    medium   Thumbnail
+    high     Thumbnail
+    standard Thumbnail
+    maxres   Thumbnail
+}
