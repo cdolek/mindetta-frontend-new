@@ -142,3 +142,7 @@ div.sigma-container {
 }
 
 /* ---------------------------- */
+
+.graphControlsContainer {
+  background: transparent;
+}

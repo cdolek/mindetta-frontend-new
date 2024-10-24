@@ -17,19 +17,18 @@ export const knowledgeGraphRouter = createTRPCRouter({
       return ctx.db.knowledgeGraph.findMany({
         where: { videoId: input.videoId },
         select: {
-          edgeId: true,
           relation: true,
           source: {
             select: {
               nodeId: true,
-              name: true,
+              title: true,
               type: true,
             },
           },
           target: {
             select: {
               nodeId: true,
-              name: true,
+              title: true,
               type: true,
             },
           },

@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import type { CSSProperties, FC } from "react";
+import type { CSSProperties } from "react";
+import type { Attributes } from "graphology-types";
+import type { SigmaContainerProps } from "@react-sigma/core";
+import { IconButton, Box, Text, Flex, Badge } from "@radix-ui/themes";
+
 import { MultiDirectedGraph as MultiGraphConstructor } from "graphology";
+
 import {
   SigmaContainer,
   ControlsContainer,
@@ -32,10 +37,7 @@ import EdgeCurveProgram, {
 import { EdgeArrowProgram } from "sigma/rendering";
 import { api } from "~/trpc/react";
 
-import {
-  LayoutForceAtlas2Control,
-  useWorkerLayoutForceAtlas2,
-} from "@react-sigma/layout-forceatlas2";
+import { LayoutForceAtlas2Control } from "@react-sigma/layout-forceatlas2";
 
 interface NodeType {
   x: number;
@@ -54,15 +56,26 @@ interface EdgeType {
   parallelMaxIndex?: number;
 }
 
+// const ENTITY_COLORS = {
+//   CONSUMER: "#1f77b4",
+//   EXPERT: "#ff7f0e",
+//   PRODUCT: "#2ca02c",
+//   SERVICE: "#00950c",
+//   TASK: "#9467bd",
+//   MARKET: "#8c564b",
+//   PROBLEM: "#ff0000",
+//   SOLUTION: "#7f7f7f",
+// };
+
 const ENTITY_COLORS = {
-  CONSUMER: "#1f77b4",
-  EXPERT: "#ff7f0e",
-  PRODUCT: "#2ca02c",
-  SERVICE: "#00950c",
-  TASK: "#9467bd",
-  MARKET: "#8c564b",
-  PROBLEM: "#ff0000",
-  SOLUTION: "#7f7f7f",
+  CONSUMER: "#1f77b4", // Blue
+  EXPERT: "#ffbc42", // Warm Yellow
+  PRODUCT: "#2ca02c", // Green
+  SERVICE: "#17becf", // Cyan
+  TASK: "#9467bd", // Purple
+  MARKET: "#8c564b", // Brown
+  PROBLEM: "#d62728", // Intense Red - to draw attention
+  SOLUTION: "#2a9d8f", // Teal Green - contrasting but harmonious with other colors
 };
 
 const GraphEvents: React.FC = () => {
@@ -93,8 +106,8 @@ const GraphEvents: React.FC = () => {
       // On mouse up, we reset the autoscale and the dragging mode
       mouseup: () => {
         if (draggedNode) {
-          setDraggedNode(null);
           sigma.getGraph().removeNodeAttribute(draggedNode, "highlighted");
+          setDraggedNode(null);
         }
       },
       // Disable the autoscale at the first down interaction
@@ -110,12 +123,12 @@ const GraphEvents: React.FC = () => {
 interface GraphData {
   source: {
     nodeId: string;
-    name: string;
+    title: string;
     type: string;
   };
   target: {
     nodeId: string;
-    name: string;
+    title: string;
     type: string;
   };
   relation: string;
@@ -136,8 +149,8 @@ const MyGraph = ({ data }: { data: GraphData[] }) => {
         // Add source and target nodes if they don't already exist
         if (!graph.hasNode(source.nodeId)) {
           graph.addNode(source.nodeId, {
-            label: source.name,
-            size: 10, // Adjust size as necessary
+            label: source.title,
+            size: 5, // Initial size, will be updated later
             color: ENTITY_COLORS[source.type as keyof typeof ENTITY_COLORS],
             x: Math.random(), // Random placement, adjust as needed
             y: Math.random(),
@@ -146,8 +159,8 @@ const MyGraph = ({ data }: { data: GraphData[] }) => {
 
         if (!graph.hasNode(target.nodeId)) {
           graph.addNode(target.nodeId, {
-            label: target.name,
-            size: 10,
+            label: target.title,
+            size: 5,
             color: ENTITY_COLORS[target.type as keyof typeof ENTITY_COLORS],
             x: Math.random(),
             y: Math.random(),
@@ -169,7 +182,8 @@ const MyGraph = ({ data }: { data: GraphData[] }) => {
       });
 
       // Adapt edge curvature
-      graph.forEachEdge((edge, { parallelIndex, parallelMaxIndex }) => {
+      graph.forEachEdge((edge, attributes) => {
+        const { parallelIndex, parallelMaxIndex } = attributes;
         if (typeof parallelIndex === "number") {
           graph.mergeEdgeAttributes(edge, {
             type: "curved",
@@ -183,39 +197,33 @@ const MyGraph = ({ data }: { data: GraphData[] }) => {
         }
       });
 
+      // Calculate degrees and set node sizes
+      let maxDegree = 0;
+      graph.forEachNode((node) => {
+        const degree = graph.degree(node);
+        if (degree > maxDegree) {
+          maxDegree = degree;
+        }
+      });
+
+      const minSize = 4;
+      const maxSize = 20;
+
+      graph.forEachNode((node) => {
+        const degree = graph.degree(node);
+
+        // Normalize degree to a value between minSize and maxSize
+        const size = minSize + (degree / maxDegree) * (maxSize - minSize);
+
+        graph.setNodeAttribute(node, "size", size);
+
+        console.log("node", node, "degree", degree, "size", size);
+      });
+
       // Load the graph into Sigma
       loadGraph(graph);
     }
   }, [data, loadGraph]);
-
-  return null;
-};
-
-const Fa2: FC = () => {
-  const { start, kill, stop } = useWorkerLayoutForceAtlas2({
-    settings: {
-      slowDown: 100,
-      gravity: 2,
-    },
-  });
-
-  useEffect(() => {
-    // start FA2
-    start();
-    // Kill FA2 on unmount
-    return () => {
-      kill();
-    };
-  }, [start, kill]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      stop();
-    }, 3000);
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [stop]);
 
   return null;
 };
@@ -225,21 +233,22 @@ const MultiDirectedGraph: React.FC<{
   videoId: string;
 }> = ({ style, videoId }) => {
   const settings = useMemo(
-    () => ({
-      allowInvalidContainer: true,
-      renderEdgeLabels: true,
-      defaultEdgeType: "straight",
-      edgeProgramClasses: {
-        straight: EdgeArrowProgram,
-        curved: EdgeCurveProgram,
-      },
-    }),
+    () =>
+      ({
+        renderEdgeLabels: true,
+        defaultEdgeType: "straight",
+        edgeProgramClasses: {
+          straight: EdgeArrowProgram,
+          curved: EdgeCurveProgram,
+        },
+        autoRescale: true,
+        autoCenter: true,
+      }) as SigmaContainerProps<Attributes, Attributes, Attributes>["settings"],
     [],
   );
 
-  // Move the useQuery here
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, isSuccess } = api.knowledgeGraph.getGraph.useQuery({
+  // Fetch the graph data using your API
+  const { data } = api.knowledgeGraph.getGraph.useQuery({
     videoId,
   });
 
@@ -256,28 +265,50 @@ const MultiDirectedGraph: React.FC<{
     >
       <MyGraph data={data} />
       <GraphEvents />
-      <Fa2 />
       <ControlsContainer position={"bottom-right"}>
         <ZoomControl
-          labels={{ zoomIn: "PLUS", zoomOut: "MINUS", reset: "RESET" }}
+          labels={{ zoomIn: "Zoom In", zoomOut: "Zoom Out", reset: "Reset" }}
         >
           <AiOutlineZoomIn />
           <AiOutlineZoomOut />
           <MdFilterCenterFocus />
         </ZoomControl>
-        <FullScreenControl labels={{ enter: "ENTER", exit: "EXIT" }}>
+        <FullScreenControl
+          labels={{ enter: "Enter Fullscreen", exit: "Exit Fullscreen" }}
+        >
           <AiOutlineFullscreen />
           <AiOutlineFullscreenExit />
         </FullScreenControl>
         <LayoutForceAtlas2Control
-          labels={{ stop: "STOP", start: "START" }}
+          labels={{ stop: "Stop Layout", start: "Start Layout" }}
           autoRunFor={1000}
+          settings={{
+            settings: {
+              adjustSizes: true,
+              gravity: 0.5,
+              // outboundAttractionDistribution: true,
+              scalingRatio: 250,
+              strongGravityMode: true,
+            },
+          }}
         >
           <AiFillPlayCircle />
           <AiFillPauseCircle />
         </LayoutForceAtlas2Control>
       </ControlsContainer>
 
+      <ControlsContainer
+        position={"bottom-left"}
+        className="graphControlsContainer"
+      >
+        <Text size="1">
+          <Flex gap="1" direction="column">
+            {Object.entries(ENTITY_COLORS).map(([type, color]) => (
+              <NodeTypeBadge key={type} type={type} color={color} />
+            ))}
+          </Flex>
+        </Text>
+      </ControlsContainer>
       <ControlsContainer position={"top-right"}>
         <SearchControl style={{ width: "200px" }} />
       </ControlsContainer>
@@ -285,289 +316,24 @@ const MultiDirectedGraph: React.FC<{
   );
 };
 
+const NodeTypeBadge: React.FC<{ type: string; color: string }> = ({
+  type,
+  color,
+}) => {
+  return (
+    <Flex align="center" gap="1">
+      <IconButton
+        style={{
+          backgroundColor: color,
+          width: 12,
+          height: 12,
+          borderRadius: 16,
+          display: "inline-block",
+        }}
+      />
+      {type}
+    </Flex>
+  );
+};
+
 export default MultiDirectedGraph;
-
-// "use client";
-
-// import { useEffect, useMemo, useState } from "react";
-// import type { CSSProperties, FC } from "react";
-// import { MultiDirectedGraph as MultiGraphConstructor } from "graphology";
-// import {
-//   SigmaContainer,
-//   ControlsContainer,
-//   ZoomControl,
-//   SearchControl,
-//   FullScreenControl,
-//   useLoadGraph,
-//   useRegisterEvents,
-//   useSigma,
-// } from "@react-sigma/core";
-
-// import {
-//   AiOutlineZoomIn,
-//   AiOutlineZoomOut,
-//   AiOutlineFullscreenExit,
-//   AiOutlineFullscreen,
-//   AiFillPlayCircle,
-//   AiFillPauseCircle,
-// } from "react-icons/ai";
-// import { MdFilterCenterFocus } from "react-icons/md";
-
-// import EdgeCurveProgram, {
-//   DEFAULT_EDGE_CURVATURE,
-//   indexParallelEdgesIndex,
-// } from "@sigma/edge-curve";
-
-// import { EdgeArrowProgram } from "sigma/rendering";
-// import { api } from "~/trpc/react";
-
-// import {
-//   LayoutForceAtlas2Control,
-//   useWorkerLayoutForceAtlas2,
-// } from "@react-sigma/layout-forceatlas2";
-
-// interface NodeType {
-//   x: number;
-//   y: number;
-//   label: string;
-//   size: number;
-//   color: string;
-// }
-
-// interface EdgeType {
-//   type?: string;
-//   label?: string;
-//   size?: number;
-//   curvature?: number;
-//   parallelIndex?: number;
-//   parallelMaxIndex?: number;
-// }
-
-// const ENTITY_COLORS = {
-//   CONSUMER: "#1f77b4",
-//   EXPERT: "#ff7f0e",
-//   PRODUCT: "#2ca02c",
-//   SERVICE: "#00950c",
-//   TASK: "#9467bd",
-//   MARKET: "#8c564b",
-//   PROBLEM: "#ff0000",
-//   SOLUTION: "#7f7f7f",
-// };
-
-// const GraphEvents: React.FC = () => {
-//   const registerEvents = useRegisterEvents();
-//   const sigma = useSigma();
-//   const [draggedNode, setDraggedNode] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     // Register the events
-//     registerEvents({
-//       downNode: (e) => {
-//         setDraggedNode(e.node);
-//         sigma.getGraph().setNodeAttribute(e.node, "highlighted", true);
-//       },
-//       // On mouse move, if the drag mode is enabled, we change the position of the draggedNode
-//       mousemovebody: (e) => {
-//         if (!draggedNode) return;
-//         // Get new position of node
-//         const pos = sigma.viewportToGraph(e);
-//         sigma.getGraph().setNodeAttribute(draggedNode, "x", pos.x);
-//         sigma.getGraph().setNodeAttribute(draggedNode, "y", pos.y);
-
-//         // Prevent sigma to move camera:
-//         e.preventSigmaDefault();
-//         e.original.preventDefault();
-//         e.original.stopPropagation();
-//       },
-//       // On mouse up, we reset the autoscale and the dragging mode
-//       mouseup: () => {
-//         if (draggedNode) {
-//           setDraggedNode(null);
-//           sigma.getGraph().removeNodeAttribute(draggedNode, "highlighted");
-//         }
-//       },
-//       // Disable the autoscale at the first down interaction
-//       mousedown: () => {
-//         if (!sigma.getCustomBBox()) sigma.setCustomBBox(sigma.getBBox());
-//       },
-//     });
-//   }, [registerEvents, sigma, draggedNode]);
-
-//   return null;
-// };
-
-// const MyGraph = ({ videoId }: { videoId: string }) => {
-//   const loadGraph = useLoadGraph<NodeType, EdgeType>();
-
-//   // Fetch the graph data using tanstack query
-//   const { data, isSuccess } = api.knowledgeGraph.getGraph.useQuery({
-//     videoId,
-//   });
-
-//   useEffect(() => {
-//     if (isSuccess && data) {
-//       // Create the graph
-//       const graph = new MultiGraphConstructor<NodeType, EdgeType>();
-
-//       // Loop through the nodes and edges data to add them to the graph
-//       data.forEach((edgeData) => {
-//         const { source, target, relation } = edgeData;
-
-//         // Add source and target nodes if they don't already exist
-//         if (!graph.hasNode(source.nodeId)) {
-//           graph.addNode(source.nodeId, {
-//             label: source.name,
-//             size: 10, // Adjust size as necessary
-//             color: ENTITY_COLORS[source.type as keyof typeof ENTITY_COLORS],
-//             x: Math.random(), // Random placement, adjust as needed
-//             y: Math.random(),
-//           });
-//         }
-
-//         if (!graph.hasNode(target.nodeId)) {
-//           graph.addNode(target.nodeId, {
-//             label: target.name,
-//             size: 10,
-//             color: ENTITY_COLORS[source.type as keyof typeof ENTITY_COLORS],
-//             x: Math.random(),
-//             y: Math.random(),
-//           });
-//         }
-
-//         // Add edge between source and target
-//         graph.addEdge(source.nodeId, target.nodeId, {
-//           label: relation,
-//           size: 2,
-//           type: "curved", // Optional, set edge type
-//         });
-//       });
-
-//       // Use helper to identify parallel edges
-//       indexParallelEdgesIndex(graph, {
-//         edgeIndexAttribute: "parallelIndex",
-//         edgeMaxIndexAttribute: "parallelMaxIndex",
-//       });
-
-//       // Adapt edge curvature
-//       graph.forEachEdge((edge, { parallelIndex, parallelMaxIndex }) => {
-//         if (typeof parallelIndex === "number") {
-//           graph.mergeEdgeAttributes(edge, {
-//             type: "curved",
-//             curvature:
-//               DEFAULT_EDGE_CURVATURE +
-//               (3 * DEFAULT_EDGE_CURVATURE * parallelIndex) /
-//                 (parallelMaxIndex ?? 1),
-//           });
-//         } else {
-//           graph.setEdgeAttribute(edge, "type", "straight");
-//         }
-//       });
-
-//       // Load the graph into Sigma
-//       loadGraph(graph);
-//     }
-//   }, [isSuccess, data, loadGraph]);
-
-//   return null;
-// };
-
-// const Fa2: FC = () => {
-//   const { start, kill, stop } = useWorkerLayoutForceAtlas2({
-//     settings: {
-//       slowDown: 100,
-//       gravity: 2,
-//       // linLogMode?: boolean;
-//       // outboundAttractionDistribution?: boolean;
-//       // adjustSizes?: boolean;
-//       // edgeWeightInfluence?: number;
-//       // scalingRatio?: number;
-//       // strongGravityMode?: boolean;
-//       // gravity?: number;
-//       // slowDown?: number;
-//       // barnesHutOptimize?: boolean;
-//       // barnesHutTheta?: number;
-//     },
-//   });
-
-//   useEffect(() => {
-//     // start FA2
-//     start();
-//     // Kill FA2 on unmount
-//     return () => {
-//       kill();
-//     };
-//   }, [start, kill]);
-
-//   useEffect(() => {
-//     const timeoutId = setTimeout(() => {
-//       stop();
-//     }, 3000);
-//     return () => {
-//       clearTimeout(timeoutId);
-//     };
-//   }, [stop]);
-
-//   return null;
-// };
-
-// const MultiDirectedGraph: React.FC<{
-//   style?: CSSProperties;
-//   videoId: string;
-// }> = ({ style, videoId }) => {
-//   const settings = useMemo(
-//     () => ({
-//       allowInvalidContainer: true,
-//       renderEdgeLabels: true,
-//       defaultEdgeType: "straight",
-//       edgeProgramClasses: {
-//         straight: EdgeArrowProgram,
-//         curved: EdgeCurveProgram,
-//       },
-//     }),
-//     [],
-//   );
-
-//   return (
-//     <SigmaContainer
-//       style={style}
-//       graph={MultiGraphConstructor}
-//       settings={settings}
-//     >
-//       <MyGraph videoId={videoId} />
-//       {/* <ControlsContainer position={"bottom-right"}>
-//         <ZoomControl />
-//         <FullScreenControl />
-//         <LayoutsControl />
-//       </ControlsContainer> */}
-//       <GraphEvents />
-//       <Fa2 />
-//       <ControlsContainer position={"bottom-right"}>
-//         <ZoomControl
-//           labels={{ zoomIn: "PLUS", zoomOut: "MINUS", reset: "RESET" }}
-//         >
-//           <AiOutlineZoomIn />
-//           <AiOutlineZoomOut />
-//           <MdFilterCenterFocus />
-//         </ZoomControl>
-//         <FullScreenControl labels={{ enter: "ENTER", exit: "EXIT" }}>
-//           <AiOutlineFullscreen />
-//           <AiOutlineFullscreenExit />
-//         </FullScreenControl>
-//         <LayoutForceAtlas2Control
-//           labels={{ stop: "STOP", start: "START" }}
-//           autoRunFor={1000}
-//           // settings={{ settings: { slowDown: 10 } }}
-//         >
-//           <AiFillPlayCircle />
-//           <AiFillPauseCircle />
-//         </LayoutForceAtlas2Control>
-//       </ControlsContainer>
-
-//       <ControlsContainer position={"top-right"}>
-//         <SearchControl style={{ width: "200px" }} />
-//       </ControlsContainer>
-//     </SigmaContainer>
-//   );
-// };
-
-// export default MultiDirectedGraph;
