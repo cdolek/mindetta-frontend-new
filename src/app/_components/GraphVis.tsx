@@ -265,7 +265,10 @@ const MultiDirectedGraph: React.FC<{
     >
       <MyGraph data={data} />
       <GraphEvents />
-      <ControlsContainer position={"bottom-right"}>
+      <ControlsContainer
+        position={"bottom-right"}
+        className="graphControlsContainer"
+      >
         <ZoomControl
           labels={{ zoomIn: "Zoom In", zoomOut: "Zoom Out", reset: "Reset" }}
         >
@@ -299,7 +302,7 @@ const MultiDirectedGraph: React.FC<{
 
       <ControlsContainer
         position={"bottom-left"}
-        className="graphControlsContainer"
+        className="graphLegendControlsContainer"
       >
         <Text size="1">
           <Flex gap="1" direction="column">
