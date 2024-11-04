@@ -377,12 +377,10 @@ model VerificationToken {
 
 model KnowledgeGraph {
     id           String             @id @default(auto()) @map("_id") @db.ObjectId
-    // edgeId            String
+    edgeId       String
     channelId    String
     channelTitle String
     relation     String
-    sourceId     String
-    targetId     String
     source       KnowledgeGraphNode
     target       KnowledgeGraphNode
     videoId      String

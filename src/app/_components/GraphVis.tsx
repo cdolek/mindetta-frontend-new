@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import type { CSSProperties } from "react";
 import type { Attributes } from "graphology-types";
 import type { SigmaContainerProps } from "@react-sigma/core";
-import { IconButton, Box, Text, Flex, Badge } from "@radix-ui/themes";
+import { IconButton, Text, Flex } from "@radix-ui/themes";
 
 import { MultiDirectedGraph as MultiGraphConstructor } from "graphology";
 
