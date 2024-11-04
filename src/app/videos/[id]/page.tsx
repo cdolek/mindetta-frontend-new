@@ -343,6 +343,49 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             </Card>
           </Box>
 
+          <Box>
+            <YouTubePlayer
+              videoId={video.data!.videoId}
+              startSeconds={startSeconds}
+            />
+          </Box>
+
+          <Grid
+            columns={{
+              initial: "2",
+              xs: "2",
+              sm: "2",
+              md: "5",
+            }}
+            gap="3"
+            p="3"
+            width="auto"
+            justify="between"
+          >
+            {transcriptChaptersSummary &&
+              Object.keys(transcriptChaptersSummary).length > 0 && (
+                <>
+                  <Button onClick={copyAllChaptersToClipboard}>
+                    <TbClipboard /> All Chapters
+                  </Button>
+
+                  <Button onClick={downloadChaptersSummary} variant="soft">
+                    <DownloadIcon /> All Chapters
+                  </Button>
+                </>
+              )}
+            {topicsSummary && Object.keys(topicsSummary).length > 0 && (
+              <>
+                <Button onClick={copyAllTopicsToClipboard}>
+                  <TbClipboard /> All Topics
+                </Button>
+                <Button onClick={downloadTopicsSummary} variant="soft">
+                  <DownloadIcon /> All Topics
+                </Button>
+              </>
+            )}
+          </Grid>
+
           {transcriptChaptersSummary || topicsSummary ? (
             <Tabs.Root defaultValue="chapters">
               <Tabs.List>
@@ -355,54 +398,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
 
               <Box pt="3">
                 <Tabs.Content value="chapters">
-                  <Box>
-                    <YouTubePlayer
-                      videoId={video.data!.videoId}
-                      startSeconds={startSeconds}
-                    />
-                  </Box>
-
-                  {/* <Grid mt="5" mb="5" gap="3" columns={{ '@initial': 1, '@md': 2 }}> */}
-
-                  <Grid
-                    columns={{
-                      initial: "2",
-                      xs: "2",
-                      sm: "2",
-                      md: "5",
-                    }}
-                    gap="3"
-                    p="3"
-                    width="auto"
-                    justify="between"
-                  >
-                    {transcriptChaptersSummary &&
-                      Object.keys(transcriptChaptersSummary).length > 0 && (
-                        <>
-                          <Button onClick={copyAllChaptersToClipboard}>
-                            <TbClipboard /> All Chapters
-                          </Button>
-
-                          <Button
-                            onClick={downloadChaptersSummary}
-                            variant="soft"
-                          >
-                            <DownloadIcon /> All Chapters
-                          </Button>
-                        </>
-                      )}
-                    {topicsSummary && Object.keys(topicsSummary).length > 0 && (
-                      <>
-                        <Button onClick={copyAllTopicsToClipboard}>
-                          <TbClipboard /> All Topics
-                        </Button>
-                        <Button onClick={downloadTopicsSummary} variant="soft">
-                          <DownloadIcon /> All Topics
-                        </Button>
-                      </>
-                    )}
-                  </Grid>
-
                   {transcriptChaptersSummary &&
                     Object.keys(transcriptChaptersSummary).length > 0 && (
                       <Flex direction="column" gap="3" width="100%">
@@ -420,7 +415,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                 </Tabs.Content>
 
                 <Tabs.Content value="topics">
-                  <Flex direction="column" gap="3" width="100%" mt="5">
+                  <Flex direction="column" gap="3" width="100%">
                     <Heading size="6" color="teal">
                       Topics
                     </Heading>
