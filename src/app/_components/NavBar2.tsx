@@ -65,7 +65,7 @@ export default function ({ session }: { session?: Session | null }) {
           <Flex justify="end" gap="3" align="center" flexGrow="1">
             {session && (
               <Box>
-                <AddVideoToQueue />
+                <AddVideoToQueue session={session} />
               </Box>
             )}
             <Box>

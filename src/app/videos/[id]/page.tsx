@@ -26,6 +26,7 @@ import {
   Separator,
   Grid,
   Avatar,
+  Tabs,
 } from "@radix-ui/themes";
 
 import Link from "next/link";
@@ -270,11 +271,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             {video.data?.title}
           </Heading>
 
-          <GraphVis
-            style={{ width: "100%", height: 540 }}
-            videoId={video.data!.videoId}
-          />
-
           <Box maxWidth="440px" mb="3" mt="3">
             <Card>
               <Flex gap="3" align="start">
@@ -309,73 +305,105 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             </Card>
           </Box>
 
-          <Box>
-            <YouTubePlayer
-              videoId={video.data!.videoId}
-              startSeconds={startSeconds}
-            />
-          </Box>
-
-          {/* <Grid mt="5" mb="5" gap="3" columns={{ '@initial': 1, '@md': 2 }}> */}
-
-          <Grid
-            columns={{
-              initial: "2",
-              xs: "2",
-              sm: "2",
-              md: "5",
-            }}
-            gap="3"
-            p="3"
-            width="auto"
-            justify="between"
-          >
-            {transcriptChaptersSummary &&
-              Object.keys(transcriptChaptersSummary).length > 0 && (
-                <>
-                  <Button onClick={copyAllChaptersToClipboard}>
-                    <TbClipboard /> All Chapters
-                  </Button>
-
-                  <Button onClick={downloadChaptersSummary} variant="soft">
-                    <DownloadIcon /> All Chapters
-                  </Button>
-                </>
-              )}
-            {topicsSummary && Object.keys(topicsSummary).length > 0 && (
-              <>
-                <Button onClick={copyAllTopicsToClipboard}>
-                  <TbClipboard /> All Topics
-                </Button>
-                <Button onClick={downloadTopicsSummary} variant="soft">
-                  <DownloadIcon /> All Topics
-                </Button>
-              </>
-            )}
-          </Grid>
-
-          {transcriptChaptersSummary &&
-            Object.keys(transcriptChaptersSummary).length > 0 && (
-              <Flex direction="column" gap="3" width="100%">
-                <Heading size="6" color="teal">
-                  Chapters
-                </Heading>
-                {video.data?.transcriptChapters.map((chapter) =>
-                  transcriptChaptersSummaryElement(
-                    chapter.title,
-                    chapter.start_time,
-                  ),
+          {transcriptChaptersSummary || topicsSummary ? (
+            <Tabs.Root defaultValue="chapters">
+              <Tabs.List>
+                <Tabs.Trigger value="chapters">Chapters</Tabs.Trigger>
+                {topicsSummary && (
+                  <Tabs.Trigger value="topics">Topics</Tabs.Trigger>
                 )}
-              </Flex>
-            )}
+                <Tabs.Trigger value="graph">Graph Visualization</Tabs.Trigger>
+              </Tabs.List>
 
-          <Flex direction="column" gap="3" width="100%" mt="5">
-            <Heading size="6" color="teal">
-              Topics
-            </Heading>
+              <Box pt="3">
+                <Tabs.Content value="chapters">
+                  <Box>
+                    <YouTubePlayer
+                      videoId={video.data!.videoId}
+                      startSeconds={startSeconds}
+                    />
+                  </Box>
 
-            {topicsSummary && topicsSummaryElements}
-          </Flex>
+                  {/* <Grid mt="5" mb="5" gap="3" columns={{ '@initial': 1, '@md': 2 }}> */}
+
+                  <Grid
+                    columns={{
+                      initial: "2",
+                      xs: "2",
+                      sm: "2",
+                      md: "5",
+                    }}
+                    gap="3"
+                    p="3"
+                    width="auto"
+                    justify="between"
+                  >
+                    {transcriptChaptersSummary &&
+                      Object.keys(transcriptChaptersSummary).length > 0 && (
+                        <>
+                          <Button onClick={copyAllChaptersToClipboard}>
+                            <TbClipboard /> All Chapters
+                          </Button>
+
+                          <Button
+                            onClick={downloadChaptersSummary}
+                            variant="soft"
+                          >
+                            <DownloadIcon /> All Chapters
+                          </Button>
+                        </>
+                      )}
+                    {topicsSummary && Object.keys(topicsSummary).length > 0 && (
+                      <>
+                        <Button onClick={copyAllTopicsToClipboard}>
+                          <TbClipboard /> All Topics
+                        </Button>
+                        <Button onClick={downloadTopicsSummary} variant="soft">
+                          <DownloadIcon /> All Topics
+                        </Button>
+                      </>
+                    )}
+                  </Grid>
+
+                  {transcriptChaptersSummary &&
+                    Object.keys(transcriptChaptersSummary).length > 0 && (
+                      <Flex direction="column" gap="3" width="100%">
+                        <Heading size="6" color="teal">
+                          Chapters
+                        </Heading>
+                        {video.data?.transcriptChapters.map((chapter) =>
+                          transcriptChaptersSummaryElement(
+                            chapter.title,
+                            chapter.start_time,
+                          ),
+                        )}
+                      </Flex>
+                    )}
+                </Tabs.Content>
+
+                <Tabs.Content value="graph">
+                  <GraphVis
+                    style={{ width: "100%", height: 540 }}
+                    videoId={video.data!.videoId}
+                  />
+                </Tabs.Content>
+
+                <Tabs.Content value="topics">
+                  <Text size="2">
+                    <Flex direction="column" gap="3" width="100%" mt="5">
+                      <Heading size="6" color="teal">
+                        Topics
+                      </Heading>
+
+                      {topicsSummary && topicsSummaryElements}
+                    </Flex>
+                  </Text>
+                </Tabs.Content>
+              </Box>
+            </Tabs.Root>
+          ) : (
+            <Text>Processing, please wait...</Text>
+          )}
 
           <p>{video.data!.videoId}</p>
           <BtnGoToTop />

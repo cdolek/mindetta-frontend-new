@@ -86,9 +86,7 @@ const EditProfile = ({
     <Dialog.Root open={editProfileOpen}>
       <Dialog.Content style={{ maxWidth: 400 }}>
         <Dialog.Title>Edit Profile</Dialog.Title>
-        {/* <Dialog.Description size="2" mb="4">
-          Make changes to your profile.
-        </Dialog.Description> */}
+        <Dialog.Description size="2" mb="4"></Dialog.Description>
 
         <form name="ipasd" onSubmit={handleSubmit} autoComplete="open-ai-key">
           <Flex direction="column" gap="3">

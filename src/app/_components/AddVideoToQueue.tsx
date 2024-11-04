@@ -4,13 +4,16 @@ import { BiSolidVideoPlus } from "react-icons/bi";
 
 import { Button, Dialog, Flex, TextField } from "@radix-ui/themes";
 import { api } from "~/trpc/react";
+import type { Session } from "next-auth";
 
-const AddVideoToQueue = () => {
+const AddVideoToQueue = ({ session }: { session?: Session | null }) => {
   const [videoInput, setVideoInput] = useState("");
+  const utils = api.useUtils();
 
   const addNewVideo = api.video.newVideo.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       console.log("success");
+      await utils.video.getAll.invalidate();
     },
   });
 
@@ -43,6 +46,7 @@ const AddVideoToQueue = () => {
 
     addNewVideo.mutate({
       videoId,
+      userId: session!.user.id || "",
     });
   };
 

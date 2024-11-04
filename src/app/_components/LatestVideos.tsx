@@ -74,5 +74,7 @@ export function LatestVideos({ session }: { session?: Session | null }) {
         })}
       </Grid>
     </Container>
-  ) : null;
+  ) : (
+    "Add a video, and they will be displayed here!"
+  );
 }

@@ -26,7 +26,7 @@ model Flow {
 
 model Video {
     id                  String         @id @default(auto()) @map("_id") @db.ObjectId
-    videoId             String
+    videoId             String         @unique
     channelId           String
     channelTitle        String
     contentDetails      Json
@@ -54,11 +54,22 @@ model Video {
     sentenceEntities          Json?
     sentenceEntities2         Json?
 
-    channel VideoChannel @relation(fields: [channelId], references: [channelId])
+    channel     VideoChannel  @relation(fields: [channelId], references: [channelId])
+    videoAccess VideoAccess[]
 
-    @@index([videoId])
+    // @@index([videoId])
     @@index([channelId])
     @@index([isShortVideo])
+}
+
+model VideoAccess {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    videoId   String
+    userId    String
+    isFirst   Boolean
+    createdAt DateTime
+    updatedAt DateTime @updatedAt
+    video     Video    @relation(fields: [videoId], references: [videoId])
 }
 
 type Transcription {

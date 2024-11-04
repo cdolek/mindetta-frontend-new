@@ -91,7 +91,7 @@ export const videoRouter = createTRPCRouter({
   //     }),
 
   newVideo: protectedProcedure
-    .input(z.object({ videoId: z.string() }))
+    .input(z.object({ videoId: z.string(), userId: z.string() }))
     .mutation(async ({ input }) => {
       console.log("newVideo", input.videoId);
 
@@ -103,7 +103,10 @@ export const videoRouter = createTRPCRouter({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ videoId: input.videoId }),
+            body: JSON.stringify({
+              videoId: input.videoId,
+              userId: input.userId,
+            }),
           },
         );
 
@@ -450,6 +453,59 @@ export const videoRouter = createTRPCRouter({
       }[];
     }),
 
+  getAll33333: protectedProcedure
+    .input(
+      z.object({
+        videosSortBy: z.string(),
+        videosSortOrder: z.string(),
+        videosSortCount: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { videosSortBy, videosSortOrder, videosSortCount } = input;
+
+      const videos = await ctx.db.video.aggregateRaw({
+        pipeline: [
+          {
+            $lookup: {
+              from: "videoAccess",
+              localField: "videoId",
+              foreignField: "videoId",
+              as: "access",
+            },
+          },
+          {
+            $match: {
+              "access.userId": ctx.session.user.id,
+            },
+          },
+          {
+            $sort: {
+              [videosSortBy]: videosSortOrder === "asc" ? 1 : -1,
+            },
+          },
+          {
+            $limit: parseInt(videosSortCount),
+          },
+          {
+            $project: {
+              id: "$_id",
+              videoId: 1,
+              title: 1,
+              publishedAt: 1,
+              isShortVideo: 1,
+              thumbnails: 1,
+              metadata: 1,
+              channelTitle: 1,
+              channelId: 1,
+            },
+          },
+        ],
+      });
+
+      return videos;
+    }),
+
   getAll: protectedProcedure
     .input(
       z.object({
@@ -461,10 +517,31 @@ export const videoRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       const { videosSortBy, videosSortOrder, videosSortCount } = input;
 
+      const isAdmin = (userId: string) => userId === "66fee4b8ceb271bbafb42950";
+
+      // console.log("---------------------");
+      // console.log(ctx.session.user.id);
+      // console.log(typeof ctx.session.user.id);
+      // console.log("---------------------");
+
       return ctx.db.video.findMany({
         // where: {
-        //   isShortVideo: false,
+        //   videoAccess: {
+        //     some: {
+        //       // userId: "66fee4b8ceb271bbafb42950",
+        //       userId: ctx.session.user.id,
+        //     },
+        //   },
         // },
+        where: isAdmin(ctx.session.user.id)
+          ? {}
+          : {
+              videoAccess: {
+                some: {
+                  userId: ctx.session.user.id,
+                },
+              },
+            },
         orderBy: { [videosSortBy]: videosSortOrder },
         // where: { createdBy: { id: ctx.session.user.id } },
         take: parseInt(videosSortCount),
