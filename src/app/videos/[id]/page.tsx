@@ -288,7 +288,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             {video.data?.title}
           </Heading>
 
-          <Box maxWidth="440px" mb="3" mt="3">
+          <Box mb="3" mt="3">
             <Card>
               <Flex gap="3" align="start">
                 <Link href={`/videoChannels/${video.data?.channel.id}`}>
@@ -419,23 +419,19 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                     )}
                 </Tabs.Content>
 
+                <Tabs.Content value="topics">
+                  <Flex direction="column" gap="3" width="100%" mt="5">
+                    <Heading size="6" color="teal">
+                      Topics
+                    </Heading>
+                    {topicsSummary && topicsSummaryElements}
+                  </Flex>
+                </Tabs.Content>
                 <Tabs.Content value="graph">
                   <GraphVis
                     style={{ width: "100%", height: 540 }}
                     videoId={video.data!.videoId}
                   />
-                </Tabs.Content>
-
-                <Tabs.Content value="topics">
-                  <Text size="2">
-                    <Flex direction="column" gap="3" width="100%" mt="5">
-                      <Heading size="6" color="teal">
-                        Topics
-                      </Heading>
-
-                      {topicsSummary && topicsSummaryElements}
-                    </Flex>
-                  </Text>
                 </Tabs.Content>
               </Box>
             </Tabs.Root>
