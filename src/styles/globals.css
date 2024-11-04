@@ -142,3 +142,25 @@ div.sigma-container {
 }
 
 /* ---------------------------- */
+
+.graphLegendControlsContainer {
+  background: transparent;
+}
+
+.graphControlsContainer {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.react-sigma-control > button {
+  background: transparent;
+}
+
+.react-sigma-control > button > svg {
+  display: inline;
+}
+
+.react-sigma-control > button:hover > svg {
+  fill: #999;
+}

@@ -69,6 +69,23 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
     const topicsSummary = video.data?.topicsSummary;
     const transcriptChaptersSummary = video.data?.transcriptChaptersSummary;
 
+    // Function to count bullet points in the given Markdown content
+    const countBulletPoints = (markdown: string): number => {
+      const bulletPointRegex = /^\s*[-*]\s+/gm;
+      const matches = markdown.match(bulletPointRegex);
+      return matches ? matches.length : 0;
+    };
+
+    // Calculate total insights count across all chapters
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const insightsCount = transcriptChaptersSummary
+      ? Object.values(transcriptChaptersSummary).reduce(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument
+          (total, content) => total + countBulletPoints(content),
+          0,
+        )
+      : 0;
+
     const topicsSummaryElements = topicsSummary
       ? Object.keys(topicsSummary).map((title: string) => {
           const content: string =
@@ -299,6 +316,27 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                     videos{" "}
                     {formatVideoStats(video.data?.channel.statistics.viewCount)}{" "}
                     views
+                  </Text>
+                </Box>
+                <Box ml="5">
+                  <Text as="div" size="2">
+                    Published: {video.data?.publishedAt.toDateString()}
+                  </Text>
+                </Box>
+                <Box ml="5">
+                  <Text as="div" size="2">
+                    Chapters: {video.data?.transcriptChapters.length}
+                  </Text>
+                </Box>
+                <Box ml="5">
+                  <Text as="div" size="2">
+                    Topics:{" "}
+                    {topicsSummary ? Object.keys(topicsSummary).length : 0}
+                  </Text>
+                </Box>
+                <Box ml="5">
+                  <Text as="div" size="2">
+                    Insights: {insightsCount}
                   </Text>
                 </Box>
               </Flex>

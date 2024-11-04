@@ -376,25 +376,26 @@ model VerificationToken {
 // }
 
 model KnowledgeGraph {
-    id                String             @id @default(auto()) @map("_id") @db.ObjectId
-    edgeId            String
-    channelId         String
-    channelTitle      String
-    relation          String
-    sourceId          String
-    targetId          String
-    source            KnowledgeGraphNode
-    target            KnowledgeGraphNode
-    videoId           String
-    videoMetaData     VideoMetaData
-    videoPublishedAt  DateTime
-    videoThumbnailsId String?
-    videoThumbnails   VideoThumbnails[]
+    id           String             @id @default(auto()) @map("_id") @db.ObjectId
+    // edgeId            String
+    channelId    String
+    channelTitle String
+    relation     String
+    sourceId     String
+    targetId     String
+    source       KnowledgeGraphNode
+    target       KnowledgeGraphNode
+    videoId      String
+    // videoMetaData     VideoMetaData
+    // videoPublishedAt  DateTime
+    // videoThumbnailsId String?
+    // videoThumbnails   VideoThumbnails[]
 }
 
 type KnowledgeGraphNode {
     nodeId       String
     name         String
+    title        String
     type         String
     videoId      String
     chapterTitle String
