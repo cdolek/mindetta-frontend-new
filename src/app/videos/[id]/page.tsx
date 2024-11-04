@@ -424,7 +424,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                 </Tabs.Content>
                 <Tabs.Content value="graph">
                   <GraphVis
-                    style={{ width: "100%", height: 540 }}
+                    style={{ width: "100%", height: 640 }}
                     videoId={video.data!.videoId}
                   />
                 </Tabs.Content>
