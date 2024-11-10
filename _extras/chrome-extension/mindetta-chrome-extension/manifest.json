@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Mindetta Button",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "Adds a button to your chrome browser toolbar to trigger the Mindetta workflow for a YouTube video.",
     "host_permissions": [
         "http://178.128.150.234:8000/*",

@@ -3,13 +3,14 @@ chrome.action.onClicked.addListener((tab) => {
   if (tab.url?.includes("youtube.com/watch")) {
     const url = new URL(tab.url);
     const videoId = url.searchParams.get("v");
+    const userId = "66fee4b8ceb271bbafb42950";
     if (videoId) {
       fetch("http://178.128.150.234:8000/api/v1/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ videoId }),
+        body: JSON.stringify({ videoId, userId }),
       })
         .then((response) => {
           if (response.ok) {
