@@ -44,10 +44,17 @@ const AddVideoToQueue = ({ session }: { session?: Session | null }) => {
       return;
     }
 
-    addNewVideo.mutate({
-      videoId,
-      userId: session!.user.id || "",
-    });
+    addNewVideo.mutate(
+      {
+        videoId,
+        userId: session!.user.id || "",
+      },
+      {
+        onSuccess: () => {
+          setVideoInput(""); // Clear input on success
+        },
+      },
+    );
   };
 
   return (
