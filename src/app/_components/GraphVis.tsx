@@ -8,6 +8,8 @@ import { IconButton, Text, Flex } from "@radix-ui/themes";
 
 import { MultiDirectedGraph as MultiGraphConstructor } from "graphology";
 
+import { drawLabel } from "../../libs/canvas-utils";
+
 import {
   SigmaContainer,
   ControlsContainer,
@@ -217,7 +219,7 @@ const MyGraph = ({ data }: { data: GraphData[] }) => {
 
         graph.setNodeAttribute(node, "size", size);
 
-        console.log("node", node, "degree", degree, "size", size);
+        // console.log("node", node, "degree", degree, "size", size);
       });
 
       // Load the graph into Sigma
@@ -237,6 +239,7 @@ const MultiDirectedGraph: React.FC<{
       ({
         renderEdgeLabels: true,
         defaultEdgeType: "straight",
+        // defaultDrawNodeLabel: drawLabel,
         edgeProgramClasses: {
           straight: EdgeArrowProgram,
           curved: EdgeCurveProgram,

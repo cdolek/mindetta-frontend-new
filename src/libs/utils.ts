@@ -9,6 +9,17 @@
 //   type NodeDataMap,
 // } from "~/_stores/SharedFlowStore";
 
+/**
+ * Formats a number or numeric string representing video statistics into a more readable string with appropriate suffixes.
+ *
+ * - Numbers in the billions are formatted with a "B" suffix.
+ * - Numbers in the millions are formatted with an "M" suffix.
+ * - Numbers in the thousands are formatted with a "K" suffix.
+ * - Numbers less than a thousand are returned as-is.
+ *
+ * @param num - The number or numeric string to format. If the input is not a valid number, it defaults to 0.
+ * @returns A formatted string representing the video statistics.
+ */
 export function formatVideoStats(num?: number | string): string {
   if (typeof num === "string") {
     num = parseInt(num);
@@ -29,6 +40,12 @@ export function formatVideoStats(num?: number | string): string {
   }
 }
 
+/**
+ * Formats a given number of seconds into a time string in the format HH:MM:SS or MM:SS.
+ *
+ * @param seconds - The number of seconds to format.
+ * @returns A string representing the formatted time. If the input is not a valid number, returns "Invalid input".
+ */
 export function formatVideoSecondsToTime(seconds: number) {
   // Ensure the input is a number
   if (typeof seconds !== "number" || isNaN(seconds)) {

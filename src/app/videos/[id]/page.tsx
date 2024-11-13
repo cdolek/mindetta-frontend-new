@@ -3,6 +3,7 @@ import type { Video } from "@prisma/client";
 import ErrorCallOut from "~/app/_components/ErrorCallOut";
 // import { api } from "~/trpc/server";
 import { api } from "~/trpc/react";
+import TimeAgo from "react-timeago";
 
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { TbClipboard } from "react-icons/tb";
@@ -11,7 +12,7 @@ import { useState } from "react";
 
 import YouTubePlayer from "~/app/_components/YouTubePlayer";
 
-import { formatVideoStats } from "~/libs/utils";
+import { formatVideoStats, formatVideoSecondsToTime } from "~/libs/utils";
 
 import { saveAs } from "file-saver";
 
@@ -27,6 +28,7 @@ import {
   Grid,
   Avatar,
   Tabs,
+  DataList,
 } from "@radix-ui/themes";
 
 import Link from "next/link";
@@ -243,42 +245,6 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
       saveAs(blob, `${video.data?.videoId}_TOPICS_${video.data!.title}.md`);
     };
 
-    // return (
-    //   <Box p="3">
-    //     <Container
-    //       style={{
-    //         background: "red",
-    //       }}
-    //     >
-    //       <Flex gap="2" align="center">
-    //         <Text size="1" color="gray">
-    //           Go back to
-    //         </Text>
-    //         <Link href="/videoChannels" size="1">
-    //           All Video Channels
-    //         </Link>
-    //         <Link href="/videos" size="1">
-    //           All Videos
-    //         </Link>
-    //       </Flex>
-    //       <Box>
-    //         <Heading size="7" mb="3">
-    //           {video.data?.title}
-    //         </Heading>
-    //       </Box>
-    //     </Container>
-    //   </Box>
-    // );
-
-    // size={{
-    //   initial: "1",
-    //   xs: "1",
-    //   sm: "1",
-    //   md: "1",
-    //   lg: "1",
-    //   xl: "1",
-    // }}
-
     return (
       <Box p="3">
         <Container>
@@ -288,67 +254,77 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
             {video.data?.title}
           </Heading>
 
-          <Box mb="3" mt="3">
-            <Card>
-              <Flex gap="3" align="start">
-                <Link href={`/videoChannels/${video.data?.channel.id}`}>
-                  <Avatar
-                    size="3"
-                    src={video.data?.channel.snippet.thumbnails?.default.url}
-                    radius="full"
-                    fallback={video.data!.channelTitle}
-                  />
-                </Link>
-                <Box>
-                  <Link href={`/videoChannels/${video.data?.channel.id}`}>
-                    <Text as="div" size="2" weight="bold">
-                      {video.data?.channelTitle}
-                    </Text>
-                  </Link>
-                  <Text as="div" size="1" color="gray">
-                    {formatVideoStats(
-                      video.data?.channel.statistics.subscriberCount,
-                    )}{" "}
-                    subscribers{" "}
-                    {formatVideoStats(
-                      video.data?.channel.statistics.videoCount,
-                    )}{" "}
-                    videos{" "}
-                    {formatVideoStats(video.data?.channel.statistics.viewCount)}{" "}
-                    views
-                  </Text>
-                </Box>
-                <Box ml="5">
-                  <Text as="div" size="2">
-                    Published: {video.data?.publishedAt.toDateString()}
-                  </Text>
-                </Box>
-                <Box ml="5">
-                  <Text as="div" size="2">
-                    Chapters: {video.data?.transcriptChapters.length}
-                  </Text>
-                </Box>
-                <Box ml="5">
-                  <Text as="div" size="2">
-                    Topics:{" "}
-                    {topicsSummary ? Object.keys(topicsSummary).length : 0}
-                  </Text>
-                </Box>
-                <Box ml="5">
-                  <Text as="div" size="2">
-                    Insights: {insightsCount}
-                  </Text>
-                </Box>
-              </Flex>
-            </Card>
-          </Box>
+          <Flex
+            gap={{
+              initial: "3",
+              xs: "3",
+              sm: "3",
+              md: "6",
+              lg: "9",
+              xl: "9",
+            }}
+          >
+            <Box>
+              <YouTubePlayer
+                videoId={video.data!.videoId}
+                startSeconds={startSeconds}
+              />
+            </Box>
 
-          <Box>
-            <YouTubePlayer
-              videoId={video.data!.videoId}
-              startSeconds={startSeconds}
-            />
-          </Box>
+            <DataList.Root
+              orientation={{ initial: "vertical", sm: "horizontal" }}
+            >
+              <DataList.Item>
+                <DataList.Label color="gray" minWidth="120px">
+                  Channel
+                </DataList.Label>
+                <DataList.Value>
+                  <Text color="blue">
+                    <Link href={`/videoChannels/${video.data?.channel.id}`}>
+                      {video.data?.channelTitle}
+                    </Link>
+                  </Text>
+                </DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label color="gray" minWidth="120px">
+                  Channel Stats
+                </DataList.Label>
+                <DataList.Value>
+                  {formatVideoStats(
+                    video.data?.channel.statistics.subscriberCount,
+                  )}{" "}
+                  subscribers,{" "}
+                  {formatVideoStats(video.data?.channel.statistics.videoCount)}{" "}
+                  videos,{" "}
+                  {formatVideoStats(video.data?.channel.statistics.viewCount)}{" "}
+                  views
+                </DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label color="gray" minWidth="120px">
+                  Published
+                </DataList.Label>
+                <DataList.Value>
+                  {video.data?.publishedAt.toDateString()}, (
+                  {video.data?.publishedAt && (
+                    <TimeAgo date={video.data.publishedAt.toDateString()} />
+                  )}
+                  )
+                </DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label color="gray" minWidth="120px">
+                  Stats
+                </DataList.Label>
+                <DataList.Value>
+                  {video.data?.transcriptChapters.length} chapters,{" "}
+                  {topicsSummary ? Object.keys(topicsSummary).length : 0}{" "}
+                  topics, {insightsCount} insights
+                </DataList.Value>
+              </DataList.Item>
+            </DataList.Root>
+          </Flex>
 
           <Grid
             columns={{
@@ -393,7 +369,7 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                 {topicsSummary && (
                   <Tabs.Trigger value="topics">Topics</Tabs.Trigger>
                 )}
-                <Tabs.Trigger value="graph">Graph Visualization</Tabs.Trigger>
+                <Tabs.Trigger value="graph">Network Visualization</Tabs.Trigger>
               </Tabs.List>
 
               <Box pt="3">
@@ -423,18 +399,39 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                   </Flex>
                 </Tabs.Content>
                 <Tabs.Content value="graph">
-                  <GraphVis
-                    style={{ width: "100%", height: 640 }}
-                    videoId={video.data!.videoId}
-                  />
+                  <Flex direction="column" gap="3" width="100%">
+                    <Heading size="6" color="teal">
+                      Network Visualization
+                    </Heading>
+                    <Text size="2" color="gray">
+                      Below is a network visualization that was generated via
+                      analyzing the transcipt of the{" "}
+                      {formatVideoSecondsToTime(
+                        video.data?.metadata?.duration ?? 0,
+                      )}{" "}
+                      long video titled "{video.data?.title}" by{" "}
+                      {video.data?.channelTitle}, which got{" "}
+                      {formatVideoStats(video.data?.metadata?.view_count)}{" "}
+                      views.{" "}
+                    </Text>
+                    <Box pt="3" pb="5">
+                      <Flex gap="3">
+                        <GraphVis
+                          style={{ width: "100%", height: 640 }}
+                          videoId={video.data!.videoId}
+                        />
+                      </Flex>
+                    </Box>
+                  </Flex>
                 </Tabs.Content>
               </Box>
             </Tabs.Root>
           ) : (
             <Text>Processing, please wait...</Text>
           )}
-
-          <p>{video.data!.videoId}</p>
+          <Box>
+            <Text>{video.data!.videoId}</Text>
+          </Box>
           <BtnGoToTop />
         </Container>
       </Box>

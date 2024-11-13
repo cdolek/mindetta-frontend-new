@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { useRef } from "react";
 import YouTube from "react-youtube";
 import type { YouTubeProps } from "react-youtube";
@@ -12,7 +15,10 @@ const YouTubePlayer = ({
   const hasTriggered = useRef(false);
 
   const opts: YouTubeProps["opts"] = {
+    // height: "1",
     // height: "360",
+    height: (200 / 16) * 9,
+    width: 200,
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: startSeconds ? 1 : 0,
@@ -43,10 +49,10 @@ const YouTubePlayer = ({
   return (
     <YouTube
       // id={videoId}
-      className="full-width"
+      // className="full-width"
       videoId={videoId}
       opts={opts}
-      onReady={onPlayerReady}
+      // onReady={onPlayerReady}
       // onStateChange={onStateChange}
     />
   );
