@@ -17,16 +17,15 @@ import { formatVideoStats, formatVideoSecondsToTime } from "~/libs/utils";
 import { saveAs } from "file-saver";
 
 import {
+  Badge,
   Box,
   Button,
-  Card,
   Heading,
   Container,
   Flex,
   Text,
   Separator,
   Grid,
-  Avatar,
   Tabs,
   DataList,
 } from "@radix-ui/themes";
@@ -315,12 +314,31 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
               </DataList.Item>
               <DataList.Item>
                 <DataList.Label color="gray" minWidth="120px">
-                  Stats
+                  Video Stats
                 </DataList.Label>
                 <DataList.Value>
-                  {video.data?.transcriptChapters.length} chapters,{" "}
-                  {topicsSummary ? Object.keys(topicsSummary).length : 0}{" "}
-                  topics, {insightsCount} insights
+                  <Flex gap="1">
+                    <Badge>
+                      {formatVideoStats(video.data?.metadata?.view_count)} views
+                    </Badge>
+                    {video.data?.metadata?.like_count && (
+                      <Badge>
+                        {formatVideoStats(video.data?.metadata?.like_count)}{" "}
+                        likes
+                      </Badge>
+                    )}
+                    {video.data?.metadata?.comment_count && (
+                      <Badge>
+                        {formatVideoStats(video.data?.metadata?.comment_count)}{" "}
+                        comments
+                      </Badge>
+                    )}
+                    <Badge color="jade">
+                      {video.data?.transcriptChapters.length} chapters,{" "}
+                      {topicsSummary ? Object.keys(topicsSummary).length : 0}{" "}
+                      topics, {insightsCount} insights
+                    </Badge>
+                  </Flex>
                 </DataList.Value>
               </DataList.Item>
             </DataList.Root>
