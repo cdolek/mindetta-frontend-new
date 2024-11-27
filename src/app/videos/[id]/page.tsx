@@ -318,6 +318,11 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                 </DataList.Label>
                 <DataList.Value>
                   <Flex gap="1">
+                    <Badge color="gray">
+                      {formatVideoSecondsToTime(
+                        video.data?.metadata?.duration ?? 0,
+                      )}
+                    </Badge>
                     <Badge>
                       {formatVideoStats(video.data?.metadata?.view_count)} views
                     </Badge>
@@ -333,11 +338,16 @@ export default function VideoPage({ params }: { params: { id: Video["id"] } }) {
                         comments
                       </Badge>
                     )}
-                    <Badge color="jade">
-                      {video.data?.transcriptChapters.length} chapters,{" "}
-                      {topicsSummary ? Object.keys(topicsSummary).length : 0}{" "}
-                      topics, {insightsCount} insights
-                    </Badge>
+                    {video.data?.transcriptChapters &&
+                      video.data.transcriptChapters.length > 0 && (
+                        <Badge color="jade">
+                          {video.data.transcriptChapters.length} chapters,{" "}
+                          {topicsSummary
+                            ? Object.keys(topicsSummary).length
+                            : 0}{" "}
+                          topics, {insightsCount} insights
+                        </Badge>
+                      )}
                   </Flex>
                 </DataList.Value>
               </DataList.Item>
