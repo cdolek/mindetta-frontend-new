@@ -164,3 +164,90 @@ div.sigma-container {
 .react-sigma-control > button:hover > svg {
   fill: #999;
 }
+
+/**
+ * ==============================================
+ * Dot Falling
+ * ==============================================
+ */
+.dot-falling {
+  margin-top: 7px;
+  margin-left: 12px;
+  position: relative;
+  left: -9999px;
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  background-color: #777;
+  color: #777;
+  box-shadow: 9999px 0 0 0 #777;
+  animation: dot-falling 1s infinite linear;
+  animation-delay: 0.1s;
+}
+.dot-falling::before,
+.dot-falling::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+.dot-falling::before {
+  margin-left: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  background-color: #777;
+  color: #777;
+  animation: dot-falling-before 1s infinite linear;
+  animation-delay: 0s;
+}
+.dot-falling::after {
+  margin-left: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  background-color: #777;
+  color: #777;
+  animation: dot-falling-after 1s infinite linear;
+  animation-delay: 0.2s;
+}
+
+@keyframes dot-falling {
+  0% {
+    box-shadow: 9999px -14px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 9999px 0 0 0 #777;
+  }
+  100% {
+    box-shadow: 9999px 14px 0 0 rgba(152, 128, 255, 0);
+  }
+}
+@keyframes dot-falling-before {
+  0% {
+    box-shadow: 9984px -14px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 9984px 0 0 0 #777;
+  }
+  100% {
+    box-shadow: 9984px 14px 0 0 rgba(152, 128, 255, 0);
+  }
+}
+@keyframes dot-falling-after {
+  0% {
+    box-shadow: 10014px -14px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 10014px 0 0 0 #777;
+  }
+  100% {
+    box-shadow: 10014px 14px 0 0 rgba(152, 128, 255, 0);
+  }
+}
